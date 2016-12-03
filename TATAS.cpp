@@ -255,12 +255,12 @@ int main()
 	//
 	// NB: each element in g is stored in a different cache line to stop false sharing
 	//
-	threadH = (THREADH*)aligned_alloc(maxThread*sizeof(THREADH), lineSz);             // thread handles
-	ops = (UINT64*)aligned_alloc(maxThread*sizeof(UINT64), lineSz);                   // for ops per thread
+	threadH = aligned_alloc(lineSz, maxThread*sizeof(THREADH));             // thread handles
+	ops = (UINT64*)aligned_alloc(lineSz, maxThread*sizeof(UINT64));                   // for ops per thread
 
-	g = (VINT*)aligned_alloc((maxThread + 1)*lineSz, lineSz);                         // local and shared global variables
+	g = (VINT*)aligned_alloc(lineSz, (maxThread + 1)*lineSz);                         // local and shared global variables
 
-	r = (Result*)aligned_alloc(5 * maxThread*sizeof(Result), lineSz);                   // for results
+	r = (Result*)aligned_alloc(lineSz, 5 * maxThread*sizeof(Result));                   // for results
 	memset(r, 0, 5 * maxThread*sizeof(Result));                                        // zero. Start location in memory.
 
 	indx = 0;
