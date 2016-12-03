@@ -4,9 +4,6 @@
 // Copyright (C) 2013 - 2015 jones@scss.tcd.ie
 //
 
-#define _GNU_SOURCE
-#include <cstdlib>
-
 #include "stdafx.h"                             // pre-compiled headers
 #include <iostream>
 #include <iomanip>                              // setprecision
