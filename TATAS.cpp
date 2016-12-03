@@ -32,7 +32,7 @@ using namespace std;
 #define GINDX(n)    (g+n*lineSz/sizeof(VINT))
 #endif
 
-#define ALIGNED_MALLOC(sz, align) _aligned_malloc(sz, align)
+#define ALIGNED_MALLOC(sz, align) aligned_alloc(sz, align)
 
 UINT64 tstart;                                  // start of test in ms
 int sharing;
