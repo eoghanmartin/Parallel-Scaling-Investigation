@@ -44,7 +44,7 @@ UINT64 *ops;                                    // for ops per thread
 
 												//ALIGN(64) volatile long lock = 0;
 
-_mm_pause (void)
+void _mm_pause ()
 {
 	__asm__ __volatile__ ("rep; nop" : : );
 }
