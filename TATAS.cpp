@@ -44,6 +44,11 @@ UINT64 *ops;                                    // for ops per thread
 
 												//ALIGN(64) volatile long lock = 0;
 
+_mm_pause (void)
+{
+	__asm__ __volatile__ ("rep; nop" : : );
+}
+
 class Node {
 public:
 	INT64 volatile key;
