@@ -258,9 +258,9 @@ int main()
 	threadH = (THREADH*)aligned_alloc(lineSz, maxThread*sizeof(THREADH));             // thread handles
 	ops = (UINT64*)aligned_alloc(lineSz, maxThread*sizeof(UINT64));                   // for ops per thread
 
-	g = (VINT*)ALIGNED_MALLOC((maxThread + 1)*lineSz, lineSz);                         // local and shared global variables
+	g = (VINT*)aligned_alloc(lineSz, (maxThread + 1)*lineSz);                         // local and shared global variables
 
-	r = (Result*)ALIGNED_MALLOC(5 * maxThread*sizeof(Result), lineSz);                   // for results
+	r = (Result*)aligned_alloc(lineSz, 5 * maxThread*sizeof(Result));                   // for results
 	memset(r, 0, 5 * maxThread*sizeof(Result));                                        // zero. Start location in memory.
 
 	indx = 0;
