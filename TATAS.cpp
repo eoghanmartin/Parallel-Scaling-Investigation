@@ -257,7 +257,7 @@ int main()
 	//
 	// NB: each element in g is stored in a different cache line to stop false sharing
 	//
-	threadH = malloc(lineSz);             // thread handles
+	threadH = (THREADH*)malloc(lineSz);             // thread handles
 	ops = (UINT64*)malloc(lineSz);                   // for ops per thread
 
 	g = (VINT*)malloc(lineSz);                         // local and shared global variables
