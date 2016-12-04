@@ -9,7 +9,13 @@
 #include <iomanip>                              // setprecision
 #include "helper.h"
 #include <math.h>
+<<<<<<< HEAD
+#include <fstream>
+#include <stdlib.h> 
+#include <cstdlib>
+=======
 #include <fstream> 
+>>>>>>> f2101551d4fe1aafd57798e04e1238f6f6c8492a
 
 using namespace std;
 
@@ -32,7 +38,11 @@ using namespace std;
 #define GINDX(n)    (g+n*lineSz/sizeof(VINT))
 #endif
 
+<<<<<<< HEAD
+#define ALIGNED_MALLOC(sz, align) aligned_alloc(align, sz)
+=======
 #define ALIGNED_MALLOC(sz, align) _aligned_malloc(sz, align)
+>>>>>>> f2101551d4fe1aafd57798e04e1238f6f6c8492a
 
 UINT64 tstart;                                  // start of test in ms
 int sharing;
@@ -44,6 +54,14 @@ UINT64 *ops;                                    // for ops per thread
 
 												//ALIGN(64) volatile long lock = 0;
 
+<<<<<<< HEAD
+void _mm_pause ()
+{
+	__asm__ __volatile__ ("rep; nop" : : );
+}
+
+=======
+>>>>>>> f2101551d4fe1aafd57798e04e1238f6f6c8492a
 class Node {
 public:
 	INT64 volatile key;
@@ -250,12 +268,21 @@ int main()
 	//
 	// NB: each element in g is stored in a different cache line to stop false sharing
 	//
+<<<<<<< HEAD
+	threadH = aligned_alloc(lineSz, maxThread*sizeof(THREADH));             // thread handles
+	ops = (UINT64*)aligned_alloc(lineSz, maxThread*sizeof(UINT64));                   // for ops per thread
+
+	g = (VINT*)aligned_alloc(lineSz, (maxThread + 1)*lineSz);                         // local and shared global variables
+
+	r = (Result*)aligned_alloc(lineSz, 5 * maxThread*sizeof(Result));                   // for results
+=======
 	threadH = (THREADH*)ALIGNED_MALLOC(maxThread*sizeof(THREADH), lineSz);             // thread handles
 	ops = (UINT64*)ALIGNED_MALLOC(maxThread*sizeof(UINT64), lineSz);                   // for ops per thread
 
 	g = (VINT*)ALIGNED_MALLOC((maxThread + 1)*lineSz, lineSz);                         // local and shared global variables
 
 	r = (Result*)ALIGNED_MALLOC(5 * maxThread*sizeof(Result), lineSz);                   // for results
+>>>>>>> f2101551d4fe1aafd57798e04e1238f6f6c8492a
 	memset(r, 0, 5 * maxThread*sizeof(Result));                                        // zero. Start location in memory.
 
 	indx = 0;
@@ -358,4 +385,8 @@ int main()
 
 }
 
+<<<<<<< HEAD
 // eof
+=======
+// eof
+>>>>>>> f2101551d4fe1aafd57798e04e1238f6f6c8492a
