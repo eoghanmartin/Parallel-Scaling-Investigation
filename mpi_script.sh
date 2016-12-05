@@ -6,6 +6,4 @@
 #$ -q long		 # Specify queue
 #$ -N job_name	         # Specify job name
 
-module load mpich	         # Required modules
-
 mpiexec -n $NSLOTS ./mpi # Application to execute
