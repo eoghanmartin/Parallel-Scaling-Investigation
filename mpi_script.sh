@@ -1,9 +1,11 @@
 #!/bin/csh
 
-#$ -M netid@nd.edu	 # Email address for job notification
+#$ -M emarti17@nd.edu	 # Email address for job notification
 #$ -m abe		 # Send mail when job begins, ends and aborts
 #$ -pe mpi-12 12	 # Specify parallel environment and legal core size
-#$ -q long		 # Specify queue
-#$ -N job_name	         # Specify job name
+#$ -q debug		 # Specify queue
+#$ -N mpi_test	         # Specify job name
 
-mpicc ./mpi # Application to execute
+module load mpich	         # Required modules
+
+mpiexec -n $NSLOTS ./mpi # Application to execute
