@@ -44,7 +44,8 @@
 #include <math.h>
 #include <fstream>
 #include <time.h>
-#include <stdio.h> 
+#include <stdio.h>
+#include <cstdlib> 
 
 using namespace std;
 
