@@ -231,8 +231,10 @@ void worker()
     while (1) {
         for(int y=0; y<NOPS; y++) {
             randomBit = 0;
-            *chooseRandom = srand(*chooseRandom);
+            *chooseRandom = rand();
             randomBit = *chooseRandom % 2;
+            runOp(*chooseRandom % 16, randomBit);
+            /*
             switch (sharing) {
                 case 0:
                     runOp(*chooseRandom % 16, randomBit);
@@ -254,6 +256,7 @@ void worker()
                     runOp(randomValue, randomBit);
                     break;
             }
+            */
         }
         n += NOPS;
         //
