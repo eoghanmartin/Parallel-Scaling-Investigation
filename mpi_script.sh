@@ -6,4 +6,4 @@
 #$ -q debug		 # Specify queue
 #$ -N mpi_test	         # Specify job name
 
-mpirun  -np $NSLOTS ./mpi
+mpirun  mpi
