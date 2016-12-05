@@ -6,5 +6,4 @@
 #$ -q debug		 # Specify queue
 #$ -N mpi_test	         # Specify job name
 
-module load ompi/1.3.2-intel
-mpirun  -np $NSLOTS mpi
+mpirun  -np $NSLOTS ./mpi
