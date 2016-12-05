@@ -37,14 +37,21 @@
 // NB: paste into Excel using paste "Use Text Import Wizard" option and select "/" as the delimiter
 //
 
-#include "stdafx.h"                             // pre-compiled headers
+//#include "stdafx.h"                             // pre-compiled headers
 #include <iostream>
 #include <iomanip>                              // setprecision
-#include "helper.h"
+#include "helper1.h"
 #include <math.h>
 #include <fstream>
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <termios.h>        //
+#include <unistd.h>         //
+#include <limits.h>         // HOST_NAME_MAX
+#include <sys/utsname.h>    //
+#include <fcntl.h>
 
 using namespace std;
 

@@ -21,11 +21,10 @@
 #include "stdafx.h"         // pre-compiled headers
 #include <iomanip>          // {joj 27/5/14}
 #include <locale>           // {joj 7/6/14}
-/*
+
 #ifdef WIN32
 #include <intrin.h>         // intrinsics
 #elif __linux__
-*/
 #include <unistd.h>         // usleep
 #include <cpuid.h>          // cpuid
 #include <string.h>         // strcpy
@@ -37,7 +36,7 @@
 
 #define AMALLOC(sz, align)  _aligned_malloc((sz + align-1) / align * align, align)
 #define AFREE(p)            _aligned_free(p)
-/*
+
 #ifdef WIN32
 
 #define CPUID(cd, v) __cpuid((int*) &cd, v);
@@ -58,7 +57,7 @@
 #define thread_local __declspec(thread)
 
 #elif __linux__
-*/
+
 #define BYTE    unsigned char
 #define UINT    unsigned int
 #define INT64   long long
@@ -116,7 +115,7 @@
 
 #define Sleep(ms) usleep((ms)*1000)
 
-//#endif
+#endif
 
 extern UINT ncpu;                                                   // # logical CPUs {joj 25/7/14}
 
@@ -135,11 +134,11 @@ extern void runThreadOnCPU(UINT);                                   // run threa
 extern void waitForThreadsToFinish(UINT, THREADH*);                 // {joj 25/7/14}
 extern void closeThread(THREADH);                                   //
 
-//#ifdef X64
+#ifdef X64
 extern UINT64 rand(UINT64&);                                        // {joj 11/5/14}
-//#else
-//extern UINT rand(UINT&);                                            // {joj 3/1/14}
-//#endif
+#else
+extern UINT rand(UINT&);                                            // {joj 3/1/14}
+#endif
 
 extern int cpu64bit();                                              // return 1 if CPU is 64 bit
 extern int cpuFamily();                                             // CPU family

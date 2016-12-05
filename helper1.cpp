@@ -52,14 +52,12 @@
 #include "stdafx.h"         // pre-compiled headers
 #include <iostream>         // cout
 #include <iomanip>          // setprecision
-#include "helper.h"         //
+#include "helper1.h"         //
 
-/*
 #ifdef WIN32
 #include <conio.h>          // _getch()
 #include <psapi.h>          // GetProcessMemoryInfo
 #elif __linux__
-*/
 #include <termios.h>        //
 #include <unistd.h>         //
 #include <limits.h>         // HOST_NAME_MAX
@@ -90,16 +88,14 @@ char *brandString = NULL;   // cpu brand string
 void getDateAndTime(char *dateAndTime, int sz, time_t t)
 {
 	t = (t == 0) ? time(NULL) : 0;
-/*
 #ifdef WIN32
 	struct tm now;
 	localtime_s(&now, &t);
 	strftime(dateAndTime, sz, "%d-%b-%Y %H:%M:%S", &now);
 #elif __linux__
-*/
 	struct tm *now = localtime(&t);
 	strftime(dateAndTime, sz, "%d-%b-%Y %H:%M:%S", now);
-//#endif
+#endif
 }
 
 //
@@ -109,17 +105,15 @@ char* getHostName()
 {
 	if (hostName == NULL) {
 
-/*
 #ifdef WIN32
 		DWORD sz = (MAX_COMPUTERNAME_LENGTH + 1) * sizeof(char);
 		hostName = (char*)malloc(sz);
 		GetComputerNameA(hostName, &sz);
 #elif __linux__
-*/
 		size_t sz = (HOST_NAME_MAX + 1) * sizeof(char);
 		hostName = (char*)malloc(sz);
 		gethostname(hostName, sz);
-//#endif
+#endif
 
 	}
 	return hostName;
@@ -134,7 +128,6 @@ char* getOSName()
 
 		osName = (char*)malloc(256);   // should be large enough
 
-/*
 #ifdef WIN32
 		DWORD sz = 256;
 		RegGetValueA(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows NT\\CurrentVersion", "ProductName", RRF_RT_ANY, NULL, (LPBYTE)osName, &sz);
@@ -146,13 +139,12 @@ char* getOSName()
 		strcat_s(osName, 256, win64 ? " (64 bit)" : " (32 bit)");
 #endif
 #elif __linux__
-*/
 		struct utsname utsName;
 		uname(&utsName);
 		strcpy(osName, utsName.sysname);
 		strcat(osName, " ");
 		strcat(osName, utsName.release);
-//#endif
+#endif
 
 	}
 	return osName;
@@ -174,15 +166,13 @@ int is64bitExe()
 //
 UINT64 getPhysicalMemSz()
 {
-
-/*#ifdef WIN32
+#ifdef WIN32
 	UINT64 v;
 	GetPhysicallyInstalledSystemMemory(&v);                         // returns KB
 	return v * 1024;                                                // now bytes
 #elif __linux__
-*/
 	return (UINT64)sysconf(_SC_PHYS_PAGES)* sysconf(_SC_PAGESIZE); // NB: returns bytes
-//#endif
+#endif
 }
 
 //
@@ -190,15 +180,13 @@ UINT64 getPhysicalMemSz()
 //
 int getNumberOfCPUs()
 {
-/*
 #ifdef WIN32
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo(&sysinfo);
 	return sysinfo.dwNumberOfProcessors;
 #elif __linux__
-*/
 	return sysconf(_SC_NPROCESSORS_ONLN);
-//#endif
+#endif
 }
 
 //
@@ -400,7 +388,6 @@ int getDeterministicCacheInfo()
 //
 int getCacheLineSz()
 {
-	cout << "cache line hit" << endl;
 	CPUID(cd, 0x00);
 	if (cd.eax >= 4)
 		return getDeterministicCacheInfo();
@@ -412,15 +399,13 @@ int getCacheLineSz()
 //
 UINT getPageSz()
 {
-/*
 #ifdef WIN32
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
 	return si.dwPageSize;
 #elif __linux__
-*/
 	return sysconf(_SC_PAGESIZE);
-//#endif 
+#endif 
 }
 
 //
@@ -428,15 +413,13 @@ UINT getPageSz()
 //
 UINT64 getWallClockMS()
 {
-/*
 #ifdef WIN32
 	return (UINT64)clock() * 1000 / CLOCKS_PER_SEC;
 #elif __linux__
-*/
 	struct timespec t;
 	clock_gettime(CLOCK_MONOTONIC, &t);
 	return t.tv_sec * 1000 + t.tv_nsec / 1000000;
-//#endif
+#endif
 }
 
 //
@@ -444,7 +427,11 @@ UINT64 getWallClockMS()
 //
 void createThread(THREADH *threadH, WORKERF, void *arg)
 {
+#ifdef WIN32
+	*threadH = CreateThread(NULL, 0, worker, arg, 0, NULL);
+#elif __linux__
 	pthread_create(threadH, NULL, worker, arg);
+#endif
 }
 
 //
@@ -452,10 +439,14 @@ void createThread(THREADH *threadH, WORKERF, void *arg)
 //
 void runThreadOnCPU(UINT cpu)
 {
+#ifdef WIN32
+	SetThreadAffinityMask(GetCurrentThread(), 1 << cpu);
+#elif __linux__
 	cpu_set_t cpuset;
 	CPU_ZERO(&cpuset);
 	CPU_SET(cpu, &cpuset);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+#endif
 }
 
 //
@@ -463,6 +454,11 @@ void runThreadOnCPU(UINT cpu)
 //
 void closeThread(THREADH threadH)
 {
+#ifdef WIN32
+	CloseHandle(threadH);
+#elif __linux__
+	// nothing to do
+#endif
 }
 
 //
@@ -470,8 +466,12 @@ void closeThread(THREADH threadH)
 //
 void waitForThreadsToFinish(UINT nt, THREADH *threadH)
 {
+#ifdef WIN32
+	WaitForMultipleObjects(nt, threadH, true, INFINITE);
+#elif __linux__
 	for (UINT thread = 0; thread < nt; thread++)
 		pthread_join(threadH[thread], NULL);
+#endif
 }
 
 //
