@@ -42,7 +42,9 @@
 #include <iomanip>                              // setprecision
 #include "helper.h"
 #include <math.h>
-#include <fstream> 
+#include <fstream>
+#include <time.h>
+#include <stdio.h> 
 
 using namespace std;
 
@@ -66,6 +68,9 @@ using namespace std;
 #endif
 
 #define ALIGNED_MALLOC(sz, align) _aligned_malloc(sz, align)
+
+clock_t start, stop;
+double elapsed;
 
 UINT64 tstart;                                  // start of test in ms
 int sharing;
@@ -186,7 +191,7 @@ void BST::releaseTATAS() {
 typedef struct {
     int sharing;                                // sharing
     int nt;                                     // # threads
-    UINT64 rt;                                  // run time (ms)
+    double rt;                                  // run time (ms)
     UINT64 ops;                                 // ops
     UINT64 incs;                                // should be equal ops
 } Result;
@@ -254,8 +259,10 @@ void worker()
         //
         // check if runtime exceeded
         //
-        if ((gettimeofday() - tstart) > NSECONDS*1000)
+        if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
             break;
+        //if ((gettimeofday() - tstart) > NSECONDS*1000)
+        //    break;
     }
     ops[thread] = n;
     BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
@@ -390,7 +397,8 @@ int main()
             // get start time
             //
             */
-            tstart = gettimeofday();
+            //tstart = gettimeofday();
+            start = clock();
             /*
             //
             // create worker threads
@@ -403,7 +411,8 @@ int main()
             waitForThreadsToFinish(nt, threadH);
             */
             worker();
-            UINT64 rt = gettimeofday() - tstart;
+            double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;;
+            //UINT64 rt = gettimeofday() - tstart;
 
             //
             // save results and output summary to console
