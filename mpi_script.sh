@@ -6,4 +6,4 @@
 #$ -q long		 # Specify queue
 #$ -N job_name	         # Specify job name
 
-mpiexec -n $NSLOTS ./mpi # Application to execute
+mpicc -n $NSLOTS ./mpi # Application to execute
