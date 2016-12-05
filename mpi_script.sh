@@ -6,6 +6,5 @@
 #$ -q debug		 # Specify queue
 #$ -N mpi_test	         # Specify job name
 
-module load mpich	         # Required modules
-
-mpiexec -n $NSLOTS ./mpi # Application to execute
+module load ompi/1.3.2-intel
+mpirun  -np $NSLOTS mpi
