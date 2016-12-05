@@ -254,7 +254,7 @@ void worker()
         //
         // check if runtime exceeded
         //
-        if ((getWallClockMS() - tstart) > NSECONDS*1000)
+        if ((gettimeofday() - tstart) > NSECONDS*1000)
             break;
     }
     ops[thread] = n;
@@ -390,7 +390,7 @@ int main()
             // get start time
             //
             */
-            tstart = getWallClockMS();
+            tstart = gettimeofday();
             /*
             //
             // create worker threads
@@ -403,7 +403,7 @@ int main()
             waitForThreadsToFinish(nt, threadH);
             */
             worker();
-            UINT64 rt = getWallClockMS() - tstart;
+            UINT64 rt = gettimeofday() - tstart;
 
             //
             // save results and output summary to console
