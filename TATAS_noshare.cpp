@@ -260,7 +260,6 @@ void worker()
     ops[thread] = n;
     BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
     BinarySearchTree->root = NULL;
-    return 0;
 }
 /*
 //
