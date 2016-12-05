@@ -338,8 +338,8 @@ int main()
     //
     // get date
     //
-    char dateAndTime[256];
-    getDateAndTime(dateAndTime, sizeof(dateAndTime));
+    //char dateAndTime[256];
+    //getDateAndTime(dateAndTime, sizeof(dateAndTime));
     //
     // get cache info
     //
@@ -462,7 +462,7 @@ int main()
 */
 
     cout << endl;
-    quit();
+    //quit();
 
     return 0;
 

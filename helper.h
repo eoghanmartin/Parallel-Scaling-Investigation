@@ -21,7 +21,7 @@
 #include "stdafx.h"         // pre-compiled headers
 #include <iomanip>          // {joj 27/5/14}
 #include <locale>           // {joj 7/6/14}
-
+/*
 #ifdef WIN32
 #include <intrin.h>         // intrinsics
 #elif __linux__
@@ -57,7 +57,7 @@
 #define thread_local __declspec(thread)
 
 #elif __linux__
-
+*/
 #define BYTE    unsigned char
 #define UINT    unsigned int
 #define INT64   long long
@@ -115,7 +115,7 @@
 
 #define Sleep(ms) usleep((ms)*1000)
 
-#endif
+//#endif
 
 extern UINT ncpu;                                                   // # logical CPUs {joj 25/7/14}
 
