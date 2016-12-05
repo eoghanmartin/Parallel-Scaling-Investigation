@@ -40,7 +40,7 @@
 //#include "stdafx.h"                             // pre-compiled headers
 #include <iostream>
 #include <iomanip>                              // setprecision
-//#include "helper1.h"
+#include "helper1.h"
 #include <math.h>
 #include <fstream>
 #include <time.h>
