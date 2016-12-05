@@ -211,6 +211,61 @@ void runOp(UINT randomValue, UINT randomBit) {
 //
 // worker
 //
+void worker()
+{
+    int thread = 0;
+
+    UINT64 n = 0;
+
+    //runThreadOnCPU(thread % ncpu);
+
+    UINT *chooseRandom  = new UINT;
+    UINT randomValue;
+    UINT randomBit;
+
+    while (1) {
+        for(int y=0; y<NOPS; y++) {
+            randomBit = 0;
+            *chooseRandom = rand(*chooseRandom);
+            randomBit = *chooseRandom % 2;
+            switch (sharing) {
+                case 0:
+                    runOp(*chooseRandom % 16, randomBit);
+                    break;
+                case 1:
+                    randomValue = *chooseRandom % 256;
+                    runOp(randomValue, randomBit);
+                    break;
+                case 2:
+                    randomValue = *chooseRandom % 4096;
+                    runOp(randomValue, randomBit);
+                    break;
+                case 3:
+                    randomValue = *chooseRandom % 65536;
+                    runOp(randomValue, randomBit);
+                    break;
+                case 4:
+                    randomValue = *chooseRandom % 1048576;
+                    runOp(randomValue, randomBit);
+                    break;
+            }
+        }
+        n += NOPS;
+        //
+        // check if runtime exceeded
+        //
+        if ((getWallClockMS() - tstart) > NSECONDS*1000)
+            break;
+    }
+    ops[thread] = n;
+    BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+    BinarySearchTree->root = NULL;
+    return 0;
+}
+/*
+//
+// worker
+//
 WORKER worker(void *vthread)
 {
     int thread = (int)((size_t) vthread);
@@ -262,6 +317,7 @@ WORKER worker(void *vthread)
     BinarySearchTree->root = NULL;
     return 0;
 }
+*/
 //
 // main
 //
@@ -347,6 +403,7 @@ int main()
             //
             waitForThreadsToFinish(nt, threadH);
             */
+            worker();
             UINT64 rt = getWallClockMS() - tstart;
 
             //
@@ -392,6 +449,7 @@ int main()
         }
     }
 */
+
     cout << endl;
     quit();
 
