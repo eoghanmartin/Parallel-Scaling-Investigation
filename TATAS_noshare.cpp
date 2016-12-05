@@ -400,7 +400,7 @@ void worker()
 
     //runThreadOnCPU(thread % ncpu);
 
-    UINT *chooseRandom  = new UINT;
+    UINT64 *chooseRandom  = new UINT64;
     UINT randomValue;
     UINT randomBit;
 
