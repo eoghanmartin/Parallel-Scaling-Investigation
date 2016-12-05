@@ -354,7 +354,7 @@ int main()
     g = (VINT*) malloc(lineSz);                         // local and shared global variables
 
     r = (Result*) malloc(lineSz);                   // for results
-    memset(r, 0, 5*maxThread*sizeof(Result));                                        // zero
+   // memset(r, 0, 5*maxThread*sizeof(Result));                                        // zero
 
     indx = 0;
     //
