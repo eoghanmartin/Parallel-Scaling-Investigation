@@ -235,6 +235,33 @@ UINT64 getWallClockMS()
     return t.tv_sec * 1000 + t.tv_nsec / 1000000;
 }
 
+UINT64 rand(UINT64 &r)
+{
+    r ^= r >> 12;   // a
+    r ^= r << 25;   // b
+    r ^= r >> 27;   // c
+    return r * 2685821657736338717LL;
+}
+
+locale *commaLocale = NULL;
+
+//
+// setCommaLocale
+//
+void setCommaLocale()
+{
+    if (commaLocale == NULL)
+        commaLocale = new locale(locale(), new CommaLocale());
+    cout.imbue(*commaLocale);
+}
+
+//
+// setLocale
+//
+void setLocale()
+{
+    cout.imbue(locale());
+}
 
 class Node {
     public:
@@ -380,7 +407,7 @@ void worker()
     while (1) {
         for(int y=0; y<NOPS; y++) {
             randomBit = 0;
-            *chooseRandom = rand();
+            *chooseRandom = rand(*chooseRandom);
             randomBit = *chooseRandom % 2;
             runOp(*chooseRandom % 16, randomBit);
             /*
