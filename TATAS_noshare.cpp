@@ -45,7 +45,6 @@
 #include <fstream>
 #include <time.h>
 #include <stdio.h>
-#include <cstdlib> 
 
 using namespace std;
 
@@ -232,7 +231,7 @@ void worker()
     while (1) {
         for(int y=0; y<NOPS; y++) {
             randomBit = 0;
-            *chooseRandom = rand(*chooseRandom);
+            *chooseRandom = srand(*chooseRandom);
             randomBit = *chooseRandom % 2;
             switch (sharing) {
                 case 0:
