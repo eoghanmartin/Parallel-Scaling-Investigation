@@ -94,6 +94,148 @@ void _mm_pause ()
     __asm__ __volatile__ ("rep; nop" : : );
 }
 
+struct _cd {
+    UINT eax;
+    UINT ebx;
+    UINT ecx;
+    UINT edx;
+} cd;
+
+//
+// look for L1 cache line size (see Intel Application note on CPUID instruction)
+//
+int lookForL1DataCacheInfo(int v)
+{
+    if (v & 0x80000000)
+        return 0;
+
+    for (int i = 0; i < 4; i++) {
+        switch (v & 0xff) {
+        case 0x0a:
+        case 0x0c:
+        case 0x10:
+            return 32;
+        case 0x0e:
+        case 0x2c:
+        case 0x60:
+        case 0x66:
+        case 0x67:
+        case 0x68:
+            return 64;
+        }
+        v >>= 8;
+    }
+    return 0;
+}
+
+//
+// getL1DataCacheInfo
+//
+int getL1DataCacheInfo()
+{
+    CPUID(cd, 2);
+
+    if ((cd.eax & 0xff) != 1) {
+        cout << "unrecognised cache type: default L 64" << endl;
+        return 64;
+    }
+
+    int sz;
+
+    if ((sz = lookForL1DataCacheInfo(cd.eax & ~0xff)))
+        return sz;
+    if ((sz = lookForL1DataCacheInfo(cd.ebx)))
+        return sz;
+    if ((sz = lookForL1DataCacheInfo(cd.ecx)))
+        return sz;
+    if ((sz = lookForL1DataCacheInfo(cd.edx)))
+        return sz;
+
+    cout << "unrecognised cache type: default L 64" << endl;
+    return 64;
+}
+
+//
+// getCacheInfo
+//
+int getCacheInfo(int level, int data, int &l, int &k, int&n)
+{
+    CPUID(cd, 0x00);
+    if (cd.eax < 4)
+        return 0;
+    int i = 0;
+    while (1) {
+        CPUIDEX(cd, 0x04, i);
+        int type = cd.eax & 0x1f;
+        if (type == 0)
+            return 0;
+        int lev = ((cd.eax >> 5) & 0x07);
+        if ((lev == level) && (((data == 0) && (type = 2)) || ((data == 1) && (type == 1))))
+            break;
+        i++;
+    }
+    k = ((cd.ebx >> 22) & 0x03ff) + 1;
+    int partitions = ((cd.ebx) >> 12 & 0x03ff) + 1;
+    n = cd.ecx + 1;
+    l = (cd.ebx & 0x0fff) + 1;
+    return partitions == 1;
+}
+
+//
+// getDeterministicCacheInfo
+//
+int getDeterministicCacheInfo()
+{
+    int type, ways, partitions, lineSz = 0, sets;
+    int i = 0;
+    while (1) {
+        CPUIDEX(cd, 0x04, i);
+        type = cd.eax & 0x1f;
+        if (type == 0)
+            break;
+        cout << "L" << ((cd.eax >> 5) & 0x07);
+        cout << ((type == 1) ? " D" : (type == 2) ? " I" : " U");
+        ways = ((cd.ebx >> 22) & 0x03ff) + 1;
+        partitions = ((cd.ebx) >> 12 & 0x03ff) + 1;
+        sets = cd.ecx + 1;
+        lineSz = (cd.ebx & 0x0fff) + 1;
+        cout << " " << setw(5) << ways*partitions*lineSz*sets / 1024 << "K" << " L" << setw(3) << lineSz << " K" << setw(3) << ways << " N" << setw(5) << sets;
+        cout << endl;
+        i++;
+    }
+    return lineSz;
+}
+
+//
+// getCacheLineSz
+//
+int getCacheLineSz()
+{
+    CPUID(cd, 0x00);
+    if (cd.eax >= 4)
+        return getDeterministicCacheInfo();
+    return getL1DataCacheInfo();
+}
+
+//
+// getPageSz
+//
+UINT getPageSz()
+{
+    return sysconf(_SC_PAGESIZE);
+}
+
+//
+// getWallClockMS
+//
+UINT64 getWallClockMS()
+{
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    return t.tv_sec * 1000 + t.tv_nsec / 1000000;
+}
+
+
 class Node {
     public:
         INT64 volatile key;
