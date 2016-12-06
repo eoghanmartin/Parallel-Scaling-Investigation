@@ -528,7 +528,7 @@ int main()
 
     //int nt = 1;
     int sharing = 0;
-    int thread = 0;
+    //int thread = 0;
 
 /*
     for (sharing = 0; sharing < 5; sharing++) {
