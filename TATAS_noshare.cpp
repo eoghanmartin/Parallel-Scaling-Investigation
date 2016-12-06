@@ -644,7 +644,7 @@ int main()
     cout << endl;
     //quit();
 
-    return 0;
+    //return 0;
 }
     else {
         worker(world_rank);
