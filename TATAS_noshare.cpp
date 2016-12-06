@@ -598,7 +598,8 @@ int main()
             //
             // save results and output summary to console
             //
-            for (int thread = 0; thread < maxThread; thread++) {
+    int thread = 0;
+            for (thread = 0; thread < maxThread; thread++) {
                 r[indx].ops += ops[thread];
                 r[indx].incs += *(GINDX(thread));
             }
