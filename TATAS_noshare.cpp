@@ -491,6 +491,7 @@ WORKER worker(void *vthread)
 //
 int main()
 {
+    MPI_Init(NULL, NULL);
     //ncpu = getNumberOfCPUs();   // number of logical CPUs
     //maxThread = 2 * ncpu;       // max number of threads
     maxThread = 12;
@@ -519,23 +520,6 @@ int main()
     //
     // use thousands comma separator
     //
-    setCommaLocale();
-    //
-    // header
-    //
-    cout << setw(13) << "BST";
-    cout << setw(10) << "nt";
-    cout << setw(10) << "rt";
-    cout << setw(20) << "ops";
-    cout << setw(10) << "rel";
-    cout << endl;
-
-    cout << setw(13) << "---";       // random count
-    cout << setw(10) << "--";        // nt
-    cout << setw(10) << "--";        // rt
-    cout << setw(20) << "---";       // ops
-    cout << setw(10) << "---";       // rel
-    cout << endl;
 
     //
     // run tests
@@ -573,7 +557,6 @@ int main()
             waitForThreadsToFinish(nt, threadH);
             */
             // Initialize the MPI environment
-    MPI_Init(NULL, NULL);
 
     // Get the number of processes
     int world_size;
@@ -588,15 +571,28 @@ int main()
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
-            worker(world_rank);
-            double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-            // Print off a hello world message
-    printf("Hello world from processor %s, rank %d"
-           " out of %d processors\n",
-           processor_name, world_rank, world_size);
+    if (rank == 0) {
+        double cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+        while (cont < 3000) {
+            cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+        }
+        setCommaLocale();
+    //
+    // header
+    //
+    cout << setw(13) << "BST";
+    cout << setw(10) << "nt";
+    cout << setw(10) << "rt";
+    cout << setw(20) << "ops";
+    cout << setw(10) << "rel";
+    cout << endl;
 
-    // Finalize the MPI environment.
-    MPI_Finalize();
+    cout << setw(13) << "---";       // random count
+    cout << setw(10) << "--";        // nt
+    cout << setw(10) << "--";        // rt
+    cout << setw(20) << "---";       // ops
+    cout << setw(10) << "---";       // rel
+    cout << endl;
             //UINT64 rt = gettimeofday() - tstart;
 
             //
@@ -647,6 +643,18 @@ int main()
     //quit();
 
     return 0;
+}
+    else {
+        worker(world_rank);
+            double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+            // Print off a hello world message
+    printf("Hello world from processor %s, rank %d"
+           " out of %d processors\n",
+           processor_name, world_rank, world_size);
+    }
+
+    // Finalize the MPI environment.
+    MPI_Finalize();
 
 }
 
