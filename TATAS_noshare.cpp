@@ -607,7 +607,7 @@ int main()
                 r[indx].incs += *(GINDX(thread));
             }
             r[indx].incs += *(GINDX(maxThread));
-            if ((sharing == 0) && (nt == 1))
+            //if ((sharing == 0) && (nt == 1))
                 ops1 = ops[thread]; //r[indx].ops;
             //r[indx].sharing = sharing;
             r[indx].nt = maxThread;
