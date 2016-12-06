@@ -614,7 +614,7 @@ int main()
             r[indx].rt = rt;
 
             cout << setw(13) << pow(16,sharing+1);
-            cout << setw(10) << nt;
+            cout << setw(10) << maxThread; //nt;
             cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
             cout << setw(20) << r[indx].ops;
             cout << setw(10) << fixed << setprecision(2) << (double) r[indx].ops / ops1;
