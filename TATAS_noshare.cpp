@@ -494,7 +494,7 @@ int main()
     MPI_Init(NULL, NULL);
     //ncpu = getNumberOfCPUs();   // number of logical CPUs
     //maxThread = 2 * ncpu;       // max number of threads
-    maxThread = 2;
+    maxThread = 24;
     //
     // get date
     //
