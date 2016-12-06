@@ -599,6 +599,7 @@ int main()
             // save results and output summary to console
             //
     int thread = 0;
+     double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
             for (thread = 0; thread < maxThread; thread++) {
                 r[indx].ops += ops[thread];
                 r[indx].incs += *(GINDX(thread));
@@ -647,7 +648,6 @@ int main()
 }
     else {
         worker(world_rank);
-            double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
             // Print off a hello world message
     printf("Hello world from processor %s, rank %d"
            " out of %d processors\n",
