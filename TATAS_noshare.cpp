@@ -571,7 +571,7 @@ int main()
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
-    if (rank == 0) {
+    if (world_rank == 0) {
         double cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         while (cont < 3000) {
             cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
