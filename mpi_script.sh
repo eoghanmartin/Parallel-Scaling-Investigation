@@ -6,4 +6,6 @@
 #$ -q debug		 # Specify queue
 #$ -N mpi_test	         # Specify job name
 
+module load ompi
+
 mpirun  mpi
