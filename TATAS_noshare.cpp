@@ -493,7 +493,7 @@ int main()
 {
     //ncpu = getNumberOfCPUs();   // number of logical CPUs
     //maxThread = 2 * ncpu;       // max number of threads
-    maxThread = 0;
+    maxThread = 12;
     //
     // get date
     //
@@ -542,7 +542,7 @@ int main()
     //
     UINT64 ops1 = 1;
 
-    int nt = 1;
+    //int nt = 1;
     int sharing = 0;
     int thread = 0;
 
@@ -602,15 +602,15 @@ int main()
             //
             // save results and output summary to console
             //
-            for (int thread = 0; thread < nt; thread++) {
+            for (int thread = 0; thread < maxThread; thread++) {
                 r[indx].ops += ops[thread];
                 r[indx].incs += *(GINDX(thread));
             }
             r[indx].incs += *(GINDX(maxThread));
             if ((sharing == 0) && (nt == 1))
-                ops1 = r[indx].ops;
-            r[indx].sharing = sharing;
-            r[indx].nt = nt;
+                ops1 = ops[thread]; //r[indx].ops;
+            //r[indx].sharing = sharing;
+            r[indx].nt = maxThread;
             r[indx].rt = rt;
 
             cout << setw(13) << pow(16,sharing+1);
