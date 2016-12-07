@@ -558,14 +558,12 @@ int main()
         cout << setw(10) << fixed << setprecision(2) << (double) r[indx].ops / ops1;
         cout << endl;
 
-        cout << lockCount << endl;
-
         cout << endl;
     }
     else {
         worker(world_rank);
             // Print off a hello world message
-        printf("Hello world from processor %s, rank %d"
+        printf("Processor %s, rank %d"
            " out of %d processors\n",
            processor_name, world_rank, world_size);
 
