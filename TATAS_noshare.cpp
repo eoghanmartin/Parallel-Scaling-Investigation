@@ -47,6 +47,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 
 #include <termios.h>        //
 #include <unistd.h>         //
@@ -76,6 +77,9 @@ using namespace std;
 #endif
 
 #define ALIGNED_MALLOC(sz, align) _aligned_malloc(sz, align)
+
+#define  MASTER     1
+#define ACCUMULATOR 0
 
 clock_t start, stop;
 double elapsed;
@@ -397,8 +401,7 @@ void worker(int rank)
             randomBit = 0;
             *chooseRandom = rand(*chooseRandom);
             randomBit = *chooseRandom % 2;
-            runOp(*chooseRandom % 16, randomBit);
-            cout << (int)*chooseRandom % 16 << endl;
+            runOp(*chooseRandom % 16, randomBit); //up to 32 branch tree (-16 - 16)
             /*
             switch (sharing) {
                 case 0:
@@ -513,7 +516,7 @@ int main()
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
-    if (world_rank == 0) {
+    if (world_rank == ACCUMULATOR) {
         double cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         while (cont < 3000) {
             cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
@@ -565,7 +568,7 @@ int main()
 
         cout << endl;
     }
-    else if (world_rank == 1) {
+    else if (world_rank == MASTER) {
         //while time less than capped time... maybe no need for this?
         //wait to recieve message with 2 parameters
         //runOp(*chooseRandom % 16, randomBit);
@@ -574,6 +577,21 @@ int main()
         //go again
     }
     else {
+        string message;
+        /* determine partner and then send/receive with partner */
+        if (world_rank == 2) {
+             partner = 3;
+             MPI_Send("sent from 2", 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
+             MPI_Recv(&message, 1, MPI_INT, partner, 1, MPI_COMM_WORLD, &status);
+         }
+        else if (world_rank == 3) {
+             partner = 2;
+             MPI_Recv(&message, 1, MPI_INT, partner, 1, MPI_COMM_WORLD, &status);
+             MPI_Send("sent from 3", 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
+         }
+        /* print partner info and exit*/
+        printf("Task %d is partner with %d\n",world_rank,message);
+
         worker(world_rank);
         cout << "World_rank " << world_rank << endl;
             // Print off a hello world message
