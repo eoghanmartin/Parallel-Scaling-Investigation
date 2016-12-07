@@ -576,6 +576,15 @@ int main()
             r[indx].incs += *(GINDX(thread));
             cout << "Ops in process " << thread << ". And Ops: " << ops[thread] << endl;
         }
+        if(world_rank == 1) {
+            double cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+            while (cont_test < 3000) {
+                cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+            }
+            cout << "0 test: " << ops[0] << endl;
+            cout << "1 test: " << ops[1] << endl;
+            cout << "2 test: " << ops[2] << endl;
+        }
     }
 
     // Finalize the MPI environment.
