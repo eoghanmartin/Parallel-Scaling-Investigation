@@ -518,6 +518,8 @@ int main()
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
+    int message;
+
     if (world_rank == ACCUMULATOR) {
         double cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         while (cont < 3000) {
@@ -582,7 +584,6 @@ int main()
         //go again
     }
     else {
-        int message;
         MPI_Send(&world_rank, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
         MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
         cout << "This should be MASTER: " << message << endl;
