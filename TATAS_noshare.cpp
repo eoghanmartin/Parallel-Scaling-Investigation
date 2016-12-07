@@ -588,6 +588,12 @@ int main()
     printf("Hello world from processor %s, rank %d"
            " out of %d processors\n",
            processor_name, world_rank, world_size);
+
+        for (thread = 0; thread < maxThread; thread++) {
+            r[indx].ops += ops[thread];
+            r[indx].incs += *(GINDX(thread));
+            cout << "Ops in process " << thread << ". And Ops: " << ops[thread] << endl;
+        }
     }
 
     // Finalize the MPI environment.
