@@ -502,7 +502,7 @@ int main()
             waitForThreadsToFinish(nt, threadH);
             */
             // Initialize the MPI environment
-            
+
     MPI_Status status;
 
     // Get the number of processes
@@ -593,7 +593,7 @@ int main()
              MPI_Send("sent from 3", 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
          }
         /* print partner info and exit*/
-        printf("Task %d is partner with %d\n",world_rank,message);
+        printf("Task " << world_rank << " is partner with " << message << endl;
 
         worker(world_rank);
         cout << "World_rank " << world_rank << endl;
