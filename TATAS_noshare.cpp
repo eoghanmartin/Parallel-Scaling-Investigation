@@ -584,13 +584,13 @@ int main()
         /* determine partner and then send/receive with partner */
         if (world_rank == 2) {
              partner = 3;
-             MPI_Send(world_rank, 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
+             MPI_Send(&world_rank, 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
              MPI_Recv(&message, 1, MPI_INT, partner, 1, MPI_COMM_WORLD, &status);
          }
         else if (world_rank == 3) {
              partner = 2;
              MPI_Recv(&message, 1, MPI_INT, partner, 1, MPI_COMM_WORLD, &status);
-             MPI_Send(world_rank, 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
+             MPI_Send(&world_rank, 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
          }
         /* print partner info and exit*/
         cout << "Task " << world_rank << " is partner with " << message << endl;
