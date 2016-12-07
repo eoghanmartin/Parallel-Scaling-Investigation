@@ -502,6 +502,8 @@ int main()
             waitForThreadsToFinish(nt, threadH);
             */
             // Initialize the MPI environment
+            
+    MPI_Status status;
 
     // Get the number of processes
     int world_size;
