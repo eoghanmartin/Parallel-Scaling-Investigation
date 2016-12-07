@@ -382,6 +382,7 @@ void runOp(UINT randomValue, UINT randomBit) {
 void worker(int rank)
 {
     int thread = rank;
+    cout << rank << endl;
 
     UINT64 n = 0;
 
@@ -562,6 +563,14 @@ int main()
         cout << endl;
 
         cout << endl;
+    }
+    else if (world_rank == 1) {
+        //while time less than capped time... maybe no need for this?
+        //wait to recieve message with 2 parameters
+        //runOp(*chooseRandom % 16, randomBit);
+        //count
+        //return that the process is completed
+        //go again
     }
     else {
         worker(world_rank);
