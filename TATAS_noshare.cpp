@@ -338,7 +338,7 @@ void BST::destroy(volatile Node *nextNode)
 }
 
 void BST::acquireTATAS() {
-    lockCount += 1;
+    lockCount = lockCount + 1;
     while (InterlockedExchange(&lock, 1) == 1){
         do {
             _mm_pause();
@@ -542,7 +542,6 @@ int main()
         for (thread = 0; thread < maxThread; thread++) {
             r[indx].ops += ops[thread];
             r[indx].incs += *(GINDX(thread));
-            cout << "Ops in process " << thread << endl;
         }
         r[indx].incs += *(GINDX(maxThread));
         //if ((sharing == 0) && (nt == 1))
