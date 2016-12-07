@@ -578,6 +578,7 @@ int main()
     }
     else {
         string message;
+        int partner;
         /* determine partner and then send/receive with partner */
         if (world_rank == 2) {
              partner = 3;
