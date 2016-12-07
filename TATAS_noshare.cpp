@@ -593,7 +593,7 @@ int main()
              MPI_Send("sent from 3", 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
          }
         /* print partner info and exit*/
-        printf("Task " << world_rank << " is partner with " << message << endl;
+        cout << "Task " << world_rank << " is partner with " << message << endl;
 
         worker(world_rank);
         cout << "World_rank " << world_rank << endl;
