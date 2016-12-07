@@ -1,41 +1,3 @@
-//
-// sharing.cpp
-//
-// Copyright (C) 2013 - 2015 jones@scss.tcd.ie
-//
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software Foundation Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-//
-// 19/11/12 first version
-// 19/11/12 works with Win32 and x64
-// 21/11/12 works with Character Set: Not Set, Unicode Character Set or Multi-Byte Character
-// 21/11/12 output results so they can be easily pasted into a spreadsheet from console
-// 24/12/12 increment using (0) non atomic increment (1) InterlockedIncrement64 (2) InterlockedCompareExchange
-// 12/07/13 increment using (3) RTM (restricted transactional memory)
-// 18/07/13 added performance counters
-// 27/08/13 choice of 32 or 64 bit counters (32 bit can oveflow if run time longer than a couple of seconds)
-// 28/08/13 extended struct Result
-// 16/09/13 linux support (needs g++ 4.8 or later)
-// 21/09/13 added getWallClockMS()
-// 12/10/13 Visual Studio 2013 RC
-// 12/10/13 added FALSESHARING
-// 14/10/14 added USEPMS
-//
-
-//
-// NB: hints for pasting from console window
-// NB: Edit -> Select All followed by Edit -> Copy
-// NB: paste into Excel using paste "Use Text Import Wizard" option and select "/" as the delimiter
-//
 
 //#include "stdafx.h"                             // pre-compiled headers
 #include <mpi.h>
@@ -84,17 +46,11 @@ using namespace std;
 clock_t start, stop;
 double elapsed;
 
-UINT64 tstart;                                  // start of test in ms
-// int sharing;
 int lineSz;                                     // cache line size
 int maxThread;                                  // max # of threads
 
 THREADH *threadH;                               // thread handles
 UINT64 *ops;                                    // for ops per thread
-
-int lockCount;
-
-//ALIGN(64) volatile long lock = 0;
 
 void _mm_pause ()
 {
@@ -342,8 +298,6 @@ void BST::destroy(volatile Node *nextNode)
 }
 
 void BST::acquireTATAS() {
-    // lockCount = lockCount + 1;
-    //cout << "Checking for lock..." << endl;
     while (InterlockedExchange(&lock, 1) == 1){
         do {
             _mm_pause();
@@ -386,11 +340,8 @@ void runOp(UINT randomValue, UINT randomBit) {
 void worker(int rank)
 {
     int thread = rank;
-    //cout << rank << endl;
 
     UINT64 n = 0;
-
-    //runThreadOnCPU(thread % ncpu);
 
     UINT64 *chooseRandom  = new UINT64;
     UINT randomValue;
@@ -432,8 +383,6 @@ void worker(int rank)
         //
         if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
             break;
-        //if ((gettimeofday() - tstart) > NSECONDS*1000)
-        //    break;
     }
     ops[thread] = n;
     BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
@@ -445,14 +394,12 @@ void worker(int rank)
 int main()
 {
     MPI_Init(NULL, NULL);
-    //ncpu = getNumberOfCPUs();   // number of logical CPUs
-    //maxThread = 2 * ncpu;       // max number of threads
+
     maxThread = 4;
     //
     // get cache info
     //
     lineSz = getCacheLineSz();
-    lockCount = 0;
     //
     // allocate global variable
     //
@@ -466,46 +413,14 @@ int main()
    // memset(r, 0, 5*maxThread*sizeof(Result));     // zero
 
     indx = 0;
-    //
-    // run tests
-    //
+
     UINT64 ops1 = 1;
 
-    //int nt = 1;
-    // int sharing = 0;
-    //int thread = 0;
-
-/*
-    for (sharing = 0; sharing < 5; sharing++) {
-        for (int nt = 1; nt <= maxThread; nt+=1, indx++) {
-            //
-            //  zero shared memory
-            //
-            for (int thread = 0; thread < nt; thread++)
-                *(GINDX(thread)) = 0;   // thread local
-            *(GINDX(maxThread)) = 0;    // shared
-            //
-            // get start time
-            //
-            */
-            //tstart = gettimeofday();
-            start = clock();
-            /*
-            //
-            // create worker threads
-            //
-            for (int thread = 0; thread < nt; thread++)
-                createThread(&threadH[thread], worker, (void*)(size_t)thread);
-            //
-            // wait for ALL worker threads to finish
-            //
-            waitForThreadsToFinish(nt, threadH);
-            */
-            // Initialize the MPI environment
+    start = clock();
+    // Initialize the MPI environment
 
     MPI_Status status;
     MPI_Status status_master;
-
 
     // Get the number of processes
     int world_size;
@@ -544,8 +459,6 @@ int main()
         cout << setw(20) << "---";       // ops
         cout << setw(10) << "---";       // rel
         cout << endl;
-        //UINT64 rt = gettimeofday() - tstart;
-
         //
         // save results and output summary to console
         //
@@ -554,14 +467,9 @@ int main()
         for (thread = 2; thread < maxThread; thread++) {
             r[indx].ops += ops[thread];
             r[indx].incs += *(GINDX(thread));
-            //cout << "0: " << ops[0] << endl;
-            //cout << "1: " << ops[1] << endl;
-            //cout << "2: " << ops[2] << endl;
         }
         r[indx].incs += *(GINDX(maxThread));
-        //if ((sharing == 0) && (nt == 1))
         ops1 = ops[thread]; //r[indx].ops;
-        //r[indx].sharing = sharing;
         r[indx].nt = maxThread;
         r[indx].rt = rt;
 
