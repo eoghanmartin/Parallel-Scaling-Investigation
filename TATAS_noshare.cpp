@@ -550,9 +550,9 @@ int main()
         for (thread = 0; thread < maxThread; thread++) {
             r[indx].ops += ops[thread];
             r[indx].incs += *(GINDX(thread));
-            cout << "0: " << ops[0] << endl;
-            cout << "1: " << ops[1] << endl;
-            cout << "2: " << ops[2] << endl;
+            //cout << "0: " << ops[0] << endl;
+            //cout << "1: " << ops[1] << endl;
+            //cout << "2: " << ops[2] << endl;
         }
         r[indx].incs += *(GINDX(maxThread));
         //if ((sharing == 0) && (nt == 1))
@@ -573,6 +573,9 @@ int main()
     else if (world_rank == MASTER) {
         //while time less than capped time... maybe no need for this?
         //wait to recieve message with 2 parameters
+        MPI_recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
+        cout << "message recieved is: " << message << endl;
+        MPI_Send(&world_rank, 1, MPI_INT, status.MPI_SOURCE, 1, MPI_COMM_WORLD);
         //runOp(*chooseRandom % 16, randomBit);
         //count
         //return that the process is completed
@@ -580,23 +583,12 @@ int main()
     }
     else {
         int message;
-        int partner;
-        /* determine partner and then send/receive with partner */
-        if (world_rank == 2) {
-             partner = 3;
-             MPI_Send(&world_rank, 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
-             MPI_Recv(&message, 1, MPI_INT, partner, 1, MPI_COMM_WORLD, &status);
-         }
-        else if (world_rank == 3) {
-             partner = 2;
-             MPI_Recv(&message, 1, MPI_INT, partner, 1, MPI_COMM_WORLD, &status);
-             MPI_Send(&world_rank, 1, MPI_INT, partner, 1, MPI_COMM_WORLD);
-         }
-        /* print partner info and exit*/
-        cout << "Task " << world_rank << " is partner with " << message << endl;
+        MPI_Send(&world_rank, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
+        MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
+        cout << "This should be MASTER: " << message << endl;
 
         worker(world_rank);
-        cout << "World_rank " << world_rank << endl;
+        //cout << "World_rank " << world_rank << endl;
             // Print off a hello world message
         printf("Processor %s, rank %d"
            " out of %d processors\n",
@@ -605,16 +597,16 @@ int main()
         for (int thread = 0; thread < maxThread; thread++) {
             r[indx].ops += ops[thread];
             r[indx].incs += *(GINDX(thread));
-            cout << "Ops in process " << thread << ". And Ops: " << ops[thread] << endl;
+            //cout << "Ops in process " << thread << ". And Ops: " << ops[thread] << endl;
         }
         if(world_rank == 1) {
             double cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
             while (cont_test < 3000) {
                 cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
             }
-            cout << "3 test: " << ops[3] << endl;
+            /*cout << "3 test: " << ops[3] << endl;
             cout << "1 test: " << ops[1] << endl;
-            cout << "2 test: " << ops[2] << endl;
+            cout << "2 test: " << ops[2] << endl;*/
         }
     }
 
