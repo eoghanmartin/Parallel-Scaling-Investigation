@@ -543,6 +543,9 @@ int main()
         for (thread = 0; thread < maxThread; thread++) {
             r[indx].ops += ops[thread];
             r[indx].incs += *(GINDX(thread));
+            cout << "0: " << ops[0] << endl;
+            cout << "1: " << ops[1] << endl;
+            cout << "2: " << ops[2] << endl;
         }
         r[indx].incs += *(GINDX(maxThread));
         //if ((sharing == 0) && (nt == 1))
