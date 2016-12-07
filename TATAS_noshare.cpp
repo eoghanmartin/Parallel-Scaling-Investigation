@@ -504,6 +504,8 @@ int main()
             // Initialize the MPI environment
 
     MPI_Status status;
+    MPI_Status status_test;
+
 
     // Get the number of processes
     int world_size;
@@ -575,9 +577,9 @@ int main()
     else if (world_rank == MASTER) {
         //while time less than capped time... maybe no need for this?
         //wait to recieve message with 2 parameters
-        MPI_recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
+        MPI_recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status_test);
         cout << "message recieved is: " << message << endl;
-        MPI_Send(&world_rank, 1, MPI_INT, status.MPI_SOURCE, 1, MPI_COMM_WORLD);
+        MPI_Send(&world_rank, 1, MPI_INT, status_test.MPI_SOURCE, 1, MPI_COMM_WORLD);
         //runOp(*chooseRandom % 16, randomBit);
         //count
         //return that the process is completed
