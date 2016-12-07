@@ -338,7 +338,7 @@ void BST::destroy(volatile Node *nextNode)
 }
 
 void BST::acquireTATAS() {
-    lockCount += lockCount;
+    lockCount += 1;
     while (InterlockedExchange(&lock, 1) == 1){
         do {
             _mm_pause();
