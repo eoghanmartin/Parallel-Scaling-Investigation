@@ -22,7 +22,7 @@ using namespace std;
 #define K           1024
 #define GB          (K*K*K)
 #define NOPS        1000
-#define NSECONDS    1                           // run each test for NSECONDS
+#define NSECONDS    2                           // run each test for NSECONDS
 
 #define COUNTER64                               // comment for 32 bit counter
 
@@ -438,27 +438,12 @@ int main()
     int message;
 
     if (world_rank == ACCUMULATOR) {
+        /*
         double cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         while (cont < 3000) {
             cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         }
         setCommaLocale();
-        //
-        // header
-        //
-        cout << setw(13) << "BST";
-        cout << setw(10) << "nt";
-        cout << setw(10) << "rt";
-        cout << setw(20) << "ops";
-        cout << setw(10) << "rel";
-        cout << endl;
-
-        cout << setw(13) << "---";       // random count
-        cout << setw(10) << "--";        // nt
-        cout << setw(10) << "--";        // rt
-        cout << setw(20) << "---";       // ops
-        cout << setw(10) << "---";       // rel
-        cout << endl;
         //
         // save results and output summary to console
         //
@@ -481,42 +466,83 @@ int main()
         cout << endl;
 
         cout << endl;
+        */
     }
     else if (world_rank == MASTER) {
-        //while time less than capped time... maybe no need for this?
-        //wait to recieve message with 2 parameters
+        int message_recv[2];
+        UINT randomValue_recv;
+        UINT randomBit_recv;
+
+        UINT64 n = 0;
+
         while(1){
-            MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
-            cout << "message recieved is: " << message << endl;
+            MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
+            cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
+            randomValue_recv = message_recv[0];
+            randomBit_recv = message_recv[1];
+            runOp(randomValue_recv, randomBit_recv);
+            ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
             MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
+            n += 1;
+            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
+                break;
         }
-        //runOp(*chooseRandom % 16, randomBit);
-        //count
-        //return that the process is completed
-        //go again
+        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+        BinarySearchTree->root = NULL;
+
+        setCommaLocale();
+
+        cout << setw(10) << "nt";
+        cout << setw(10) << "rt";
+        cout << setw(20) << "ops";
+        cout << endl;
+
+        cout << setw(10) << "--";        // nt
+        cout << setw(10) << "--";        // rt
+        cout << setw(20) << "---";       // ops
+        cout << endl;
+
+        double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+        r[0].nt = maxThread;
+        r[0].ops = n;
+
+        cout << setw(10) << r[0].nt ; //nt;
+        cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
+        cout << setw(20) << r[0].ops;
+        cout << endl;
+
+        cout << endl;
     }
     else {
-        MPI_Send(&world_rank, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
-        MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
-        cout << "This should be MASTER: " << message << endl;
+        int message_send[2];
 
-        worker(world_rank);
+        UINT64 n = 0;
+
+        UINT64 *chooseRandom  = new UINT64;
+        UINT randomValue;
+        UINT randomBit;
 
         printf("Processor %s, rank %d"
            " out of %d processors\n",
            processor_name, world_rank, world_size);
 
-        for (int thread = 0; thread < maxThread; thread++) {
-            r[indx].ops += ops[thread];
-            r[indx].incs += *(GINDX(thread));
-            //cout << "Ops in process " << thread << ". And Ops: " << ops[thread] << endl;
+        while (1) {
+            randomBit = 0;
+            *chooseRandom = rand(*chooseRandom);
+            randomBit = *chooseRandom % 2;
+            message_send[0] = *chooseRandom % 16;
+            message_send[1] = randomBit;
+            MPI_Send(&message_send, 2, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
+            MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
+            cout << "This should be MASTER: " << message << endl;
+            n += 1;
+            //
+            // check if runtime exceeded
+            //
+            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
+                break;
         }
-        if(world_rank == 1) {
-            double cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-            while (cont_test < 3000) {
-                cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-            }
-        }
+        cout << "Number of ops for process " << world_rank << ": " << n << endl;
     }
 
     // Finalize the MPI environment.
