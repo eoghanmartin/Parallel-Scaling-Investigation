@@ -338,7 +338,8 @@ void BST::destroy(volatile Node *nextNode)
 }
 
 void BST::acquireTATAS() {
-    lockCount = lockCount + 1;
+    // lockCount = lockCount + 1;
+    cout << "Checking for lock..." << endl;
     while (InterlockedExchange(&lock, 1) == 1){
         do {
             _mm_pause();
