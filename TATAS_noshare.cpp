@@ -447,7 +447,7 @@ int main()
     MPI_Init(NULL, NULL);
     //ncpu = getNumberOfCPUs();   // number of logical CPUs
     //maxThread = 2 * ncpu;       // max number of threads
-    maxThread = 3;
+    maxThread = 4;
     //
     // get cache info
     //
@@ -551,7 +551,7 @@ int main()
         //
         int thread = 0;
         double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        for (thread = 0; thread < maxThread; thread++) {
+        for (thread = 2; thread < maxThread; thread++) {
             r[indx].ops += ops[thread];
             r[indx].incs += *(GINDX(thread));
             //cout << "0: " << ops[0] << endl;
