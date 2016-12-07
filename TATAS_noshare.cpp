@@ -581,7 +581,7 @@ int main()
             while (cont_test < 3000) {
                 cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
             }
-            cout << "0 test: " << ops[0] << endl;
+            cout << "3 test: " << ops[3] << endl;
             cout << "1 test: " << ops[1] << endl;
             cout << "2 test: " << ops[2] << endl;
         }
