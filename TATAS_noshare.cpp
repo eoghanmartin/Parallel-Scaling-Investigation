@@ -88,6 +88,8 @@ int maxThread;                                  // max # of threads
 THREADH *threadH;                               // thread handles
 UINT64 *ops;                                    // for ops per thread
 
+int lockCount;
+
 //ALIGN(64) volatile long lock = 0;
 
 void _mm_pause ()
@@ -336,6 +338,7 @@ void BST::destroy(volatile Node *nextNode)
 }
 
 void BST::acquireTATAS() {
+    lockCount += lockCount;
     while (InterlockedExchange(&lock, 1) == 1){
         do {
             _mm_pause();
@@ -443,6 +446,7 @@ int main()
     // get cache info
     //
     lineSz = getCacheLineSz();
+    lockCount = 0;
     //
     // allocate global variable
     //
@@ -512,80 +516,54 @@ int main()
             cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         }
         setCommaLocale();
-    //
-    // header
-    //
-    cout << setw(13) << "BST";
-    cout << setw(10) << "nt";
-    cout << setw(10) << "rt";
-    cout << setw(20) << "ops";
-    cout << setw(10) << "rel";
-    cout << endl;
+        //
+        // header
+        //
+        cout << setw(13) << "BST";
+        cout << setw(10) << "nt";
+        cout << setw(10) << "rt";
+        cout << setw(20) << "ops";
+        cout << setw(10) << "rel";
+        cout << endl;
 
-    cout << setw(13) << "---";       // random count
-    cout << setw(10) << "--";        // nt
-    cout << setw(10) << "--";        // rt
-    cout << setw(20) << "---";       // ops
-    cout << setw(10) << "---";       // rel
-    cout << endl;
-            //UINT64 rt = gettimeofday() - tstart;
+        cout << setw(13) << "---";       // random count
+        cout << setw(10) << "--";        // nt
+        cout << setw(10) << "--";        // rt
+        cout << setw(20) << "---";       // ops
+        cout << setw(10) << "---";       // rel
+        cout << endl;
+        //UINT64 rt = gettimeofday() - tstart;
 
-            //
-            // save results and output summary to console
-            //
-    int thread = 0;
-     double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-            for (thread = 0; thread < maxThread; thread++) {
-                r[indx].ops += ops[thread];
-                r[indx].incs += *(GINDX(thread));
-                cout << "Ops in process " << thread << endl;
-            }
-            r[indx].incs += *(GINDX(maxThread));
-            //if ((sharing == 0) && (nt == 1))
-                ops1 = ops[thread]; //r[indx].ops;
-            //r[indx].sharing = sharing;
-            r[indx].nt = maxThread;
-            r[indx].rt = rt;
-
-            cout << setw(13) << pow(16,1); // sharing+1);
-            cout << setw(10) << maxThread; //nt;
-            cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
-            cout << setw(20) << r[indx].ops;
-            cout << setw(10) << fixed << setprecision(2) << (double) r[indx].ops / ops1;
-            cout << endl;
-
-            /*
-            ofstream metrics;
-            metrics.open("metricsTATAS.txt", ios_base::app);
-
-            metrics << pow(16,sharing+1) << ", ";
-            metrics << nt << ", ";
-            metrics << fixed << setprecision(2) << (double)rt / 1000 << ", ";
-            metrics << r[indx].ops << ", ";
-            metrics << fixed << setprecision(2) << (double)r[indx].ops / ops1;
-            metrics << endl;
-
-            metrics.close();
-
-            //
-            // delete thread handles
-            //
-            for (int thread = 0; thread < nt; thread++) {
-                closeThread(threadH[thread]);
-            }
+        //
+        // save results and output summary to console
+        //
+        int thread = 0;
+        double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+        for (thread = 0; thread < maxThread; thread++) {
+            r[indx].ops += ops[thread];
+            r[indx].incs += *(GINDX(thread));
+            cout << "Ops in process " << thread << endl;
         }
+        r[indx].incs += *(GINDX(maxThread));
+        //if ((sharing == 0) && (nt == 1))
+        ops1 = ops[thread]; //r[indx].ops;
+        //r[indx].sharing = sharing;
+        r[indx].nt = maxThread;
+        r[indx].rt = rt;
+
+        cout << setw(13) << pow(16,1); // sharing+1);
+        cout << setw(10) << maxThread; //nt;
+        cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
+        cout << setw(20) << r[indx].ops;
+        cout << setw(10) << fixed << setprecision(2) << (double) r[indx].ops / ops1;
+        cout << endl;
+
+        cout << endl;
     }
-*/
-
-    cout << endl;
-    //quit();
-
-    //return 0;
-}
     else {
         worker(world_rank);
             // Print off a hello world message
-    printf("Hello world from processor %s, rank %d"
+        printf("Hello world from processor %s, rank %d"
            " out of %d processors\n",
            processor_name, world_rank, world_size);
 
