@@ -504,7 +504,7 @@ int main()
             // Initialize the MPI environment
 
     MPI_Status status;
-    MPI_Status status_test;
+    MPI_Status status_master;
 
 
     // Get the number of processes
@@ -578,9 +578,9 @@ int main()
         //while time less than capped time... maybe no need for this?
         //wait to recieve message with 2 parameters
         while(1){
-            MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_test);
+            MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
             cout << "message recieved is: " << message << endl;
-            MPI_Send(&world_rank, 1, MPI_INT, status_test.MPI_SOURCE, 1, MPI_COMM_WORLD);
+            MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
         }
         //runOp(*chooseRandom % 16, randomBit);
         //count
@@ -593,8 +593,7 @@ int main()
         cout << "This should be MASTER: " << message << endl;
 
         worker(world_rank);
-        //cout << "World_rank " << world_rank << endl;
-            // Print off a hello world message
+
         printf("Processor %s, rank %d"
            " out of %d processors\n",
            processor_name, world_rank, world_size);
@@ -609,9 +608,6 @@ int main()
             while (cont_test < 3000) {
                 cont_test = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
             }
-            /*cout << "3 test: " << ops[3] << endl;
-            cout << "1 test: " << ops[1] << endl;
-            cout << "2 test: " << ops[2] << endl;*/
         }
     }
 
