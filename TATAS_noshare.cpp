@@ -565,6 +565,7 @@ int main()
     }
     else {
         worker(world_rank);
+        cout << "World_rank " << world_rank << endl;
             // Print off a hello world message
         printf("Processor %s, rank %d"
            " out of %d processors\n",
