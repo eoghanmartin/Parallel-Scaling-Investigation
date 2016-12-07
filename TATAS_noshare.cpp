@@ -558,6 +558,8 @@ int main()
         cout << setw(10) << fixed << setprecision(2) << (double) r[indx].ops / ops1;
         cout << endl;
 
+        cout << lockCount << endl;
+
         cout << endl;
     }
     else {
