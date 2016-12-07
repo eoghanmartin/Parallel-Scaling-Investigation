@@ -398,7 +398,7 @@ void worker(int rank)
             *chooseRandom = rand(*chooseRandom);
             randomBit = *chooseRandom % 2;
             runOp(*chooseRandom % 16, randomBit);
-            cout << ((int)*chooseRandom % 16 << endl;
+            cout << (int)*chooseRandom % 16 << endl;
             /*
             switch (sharing) {
                 case 0:
