@@ -438,7 +438,7 @@ int main()
     MPI_Init(NULL, NULL);
     //ncpu = getNumberOfCPUs();   // number of logical CPUs
     //maxThread = 2 * ncpu;       // max number of threads
-    maxThread = 2;
+    maxThread = 3;
     //
     // get cache info
     //
@@ -538,6 +538,7 @@ int main()
             for (thread = 0; thread < maxThread; thread++) {
                 r[indx].ops += ops[thread];
                 r[indx].incs += *(GINDX(thread));
+                cout << "Ops in process " << thread << endl;
             }
             r[indx].incs += *(GINDX(maxThread));
             //if ((sharing == 0) && (nt == 1))
