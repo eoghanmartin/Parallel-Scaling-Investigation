@@ -247,7 +247,7 @@ void BST::add (Node *n)
             }
             pp = &p->left;
         } else if (n->key > p->key) {
-            cout << "value in p->right: " << p->right->key << endl;
+            cout << "value in p->right: " << p->right->*key << endl;
             if (&p->right == NULL){
                 lockedNode = **pp;
                 cout << "value in lock: " << lockedNode.key << endl;
