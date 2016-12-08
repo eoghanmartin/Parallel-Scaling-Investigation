@@ -460,7 +460,7 @@ int main()
         UINT randomValue;
         UINT randomBit;
 
-        printf("Processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
+        //printf("Processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
 
         while (1) {
             randomBit = 0;
