@@ -242,13 +242,13 @@ void BST::add (Node *n)
     while (p) {
         if (n->key < p->key) {
             if (&p->left == NULL){
-                lockedNode = **pp;
+                lockedNode = pp;
                 *lockedNode.acquireTATAS_node();
             }
             pp = &p->left;
         } else if (n->key > p->key) {
             if (&p->right == NULL){
-                lockedNode = **pp;
+                lockedNode = pp;
                 *lockedNode.acquireTATAS_node();
             }
             pp = &p->right;
