@@ -213,8 +213,6 @@ class Node {
         Node* volatile right;
         ALIGN(64) volatile long lock_node;
         Node() {key = 0; right = left = NULL;} // default constructor
-        void acquireTATAS_node();
-        void releaseTATAS_node();
 };
 
 class BST {
@@ -233,35 +231,23 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    //acquireTATAS();
+    acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = *n;
     while (p) {
         if (n->key < p->key) {
-            if (p->left == NULL){
-                lockedNode = **pp;
-                cout << "value in lock left: " << lockedNode.key << endl;
-                lockedNode.acquireTATAS_node();
-            }
             pp = &p->left;
         } else if (n->key > p->key) {
-            if (p->right == NULL){
-                lockedNode = **pp;
-                cout << "value in lock right: " << lockedNode.key << endl;
-                lockedNode.acquireTATAS_node();
-            }
             pp = &p->right;
         } else {
-            lockedNode.releaseTATAS_node();
-            //releaseTATAS();
+            releaseTATAS();
             return;
         }
         p = *pp;
     }
     *pp = n;
-    lockedNode.releaseTATAS_node();
-    //releaseTATAS();
+    releaseTATAS();
 }
 
 void BST::remove(INT64 key)
@@ -357,7 +343,7 @@ void runOp(UINT randomValue, UINT randomBit) {
         BinarySearchTree->add(addNode);
     }
     else {
-        //BinarySearchTree->remove(randomValue);
+        BinarySearchTree->remove(randomValue);
     }
 }
 //
