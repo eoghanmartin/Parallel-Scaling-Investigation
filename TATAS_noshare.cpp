@@ -487,8 +487,8 @@ int main()
             if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
                 break;
         }
-        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-        BinarySearchTree->root = NULL;
+        //BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+        //BinarySearchTree->root = NULL;
 
         setCommaLocale();
 
