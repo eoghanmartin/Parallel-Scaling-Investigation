@@ -292,9 +292,10 @@ void BST::remove(INT64 key)
         p = *pp;
         lockedNode.releaseTATAS_node();
     }
-    if (p == NULL)
+    if (p == NULL){
         //releaseTATAS();
         return;
+    }
     lockedNode = *p;
     lockedNode.acquireTATAS_node();
     if (p->left == NULL && p->right == NULL) {
