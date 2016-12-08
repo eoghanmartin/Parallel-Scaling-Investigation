@@ -395,6 +395,8 @@ int main()
 {
     MPI_Init(NULL, NULL);
 
+    setCommaLocale();
+
     maxThread = 4;
     //
     // get cache info
@@ -476,6 +478,8 @@ int main()
         UINT64 n = 0;
 
         while(1){
+            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
+                break;
             MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
             cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
             randomValue_recv = message_recv[0];
@@ -484,13 +488,9 @@ int main()
             ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
             MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
             n += 1;
-            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
-                break;
         }
-        //BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-        //BinarySearchTree->root = NULL;
-
-        setCommaLocale();
+        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+        BinarySearchTree->root = NULL;
 
         cout << setw(10) << "nt";
         cout << setw(10) << "rt";
