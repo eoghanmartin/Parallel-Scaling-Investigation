@@ -263,10 +263,10 @@ void BST::add (Node *n)
         p = *pp;
         lockedNode.releaseTATAS_node();
     }
-    lockedNode = *p;
-    lockedNode.acquireTATAS_node();
+    //lockedNode = *p;
+    //lockedNode.acquireTATAS_node();
     *pp = n;
-    lockedNode.releaseTATAS_node();
+    //lockedNode.releaseTATAS_node();
     //releaseTATAS();
 }
 
