@@ -335,14 +335,6 @@ void Node::releaseTATAS_node() {
     lock_node = 0;
 }
 
-typedef struct {
-    int sharing;                                // sharing
-    int nt;                                     // # threads
-    double rt;                                  // run time (ms)
-    UINT64 ops;                                 // ops
-    UINT64 incs;                                // should be equal ops
-} Result;
-
 Result *r;                                      // results
 UINT indx;                                      // results index
 
@@ -378,10 +370,6 @@ int main()
     // NB: each element in g is stored in a different cache line to stop false sharing
     //
     ops = (UINT64*) malloc(lineSz);                   // for ops per thread
-
-    g = (VINT*) malloc(lineSz);                         // local and shared global variables
-
-    r = (Result*) malloc(lineSz);                   // for results
 
     indx = 0;
 
@@ -438,10 +426,9 @@ int main()
         cout << endl;
 
         double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        r[0].ops = n;
 
         cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
-        cout << setw(20) << r[0].ops;
+        cout << setw(20) << n;
         cout << endl;
 
         cout << endl;
