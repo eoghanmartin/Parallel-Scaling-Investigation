@@ -404,7 +404,6 @@ int main()
             ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
             MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
             n += 1;
-            cout << n << endl;
         }
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         BinarySearchTree->root = NULL;
