@@ -213,10 +213,7 @@ class Node {
         INT64 volatile key;
         Node* volatile left;
         Node* volatile right;
-        ALIGN(64) volatile long lock_node;
         Node() {key = 0; right = left = NULL;} // default constructor
-        void acquireTATAS_node();
-        void releaseTATAS_node();
 };
 
 class BST {
@@ -235,33 +232,22 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    //acquireTATAS();
+    acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
-    Node* volatile* volatile lockedNode;
     while (p) {
         if (n->key < p->key) {
-            if (&p->left == NULL){
-                lockedNode = &pp;
-                *lockedNode.acquireTATAS_node();
-            }
-            pp = &p->left;
+        pp = &p->left;
         } else if (n->key > p->key) {
-            if (&p->right == NULL){
-                lockedNode = &pp;
-                *lockedNode.acquireTATAS_node();
-            }
             pp = &p->right;
-        } else {
-            *lockedNode.releaseTATAS_node();
-            //releaseTATAS();
-            return;
-        }
+            } else {
+                releaseTATAS();
+                return;
+            }
         p = *pp;
     }
     *pp = n;
-    *lockedNode.releaseTATAS_node();
-    //releaseTATAS();
+    releaseTATAS();
 }
 
 void BST::remove(INT64 key)
@@ -273,10 +259,10 @@ void BST::remove(INT64 key)
         if (key < p->key) {
             pp = &p->left;
         } else if (key > p->key) {
-        pp = &p->right;
-        } else {
-            break;
-        }
+            pp = &p->right;
+            } else {
+                break;
+            }
         p = *pp;
     }
     if (p == NULL)
@@ -323,18 +309,6 @@ void BST::releaseTATAS() {
     lock = 0;
 }
 
-void Node::acquireTATAS_node() {
-    while (InterlockedExchange(&lock_node, 1) == 1){
-        do {
-            _mm_pause();
-        } while (lock_node == 1);
-    }
-}
-
-void Node::releaseTATAS_node() {
-    lock_node = 0;
-}
-
 typedef struct {
     int sharing;                                // sharing
     int nt;                                     // # threads
@@ -357,7 +331,7 @@ void runOp(UINT randomValue, UINT randomBit) {
         BinarySearchTree->add(addNode);
     }
     else {
-        //BinarySearchTree->remove(randomValue);
+        BinarySearchTree->remove(randomValue);
     }
 }
 //

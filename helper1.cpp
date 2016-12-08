@@ -1,51 +1,4 @@
 //
-// helper.cpp
-//
-// Copyright (C) 2011 - 2015 jones@scss.tcd.ie
-//
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software Foundation Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-//
-
-//
-// 12/01/11 first version
-// 15/07/13 added performance monitoring support
-// 14/09/13 linux support (needs g++ 4.8 or later)
-// 09/02/14 added setCommaLocale and setLocale
-// 10/05/14 added getVMUse and getMemUse
-// 08/06/14 allocated commaLocale only once
-// 26/07/14 added getPageSz()
-// 26/10/14 added thread_local definitions
-// 26/11/14 added AMALLOC and AFREE
-//
-
-//
-// 05-08-15 enabling TSX instructions
-//
-// TSX was first supported by Haswell CPUs released Q2 2013.
-// Not all Haswell or newer CPUs support TSX, you need to consult the Intel Ark database.
-// In Aug-14, a bug was reported in the TSX implementation (occurs very rarely).
-// Although this bug has been fixed in more recent CPUs (eg Broadwell and Skylake), many systems
-// disable the buggy TSX instructions at boot time by loading microcode into the CPU.
-// This is done by the BIOS or OS or both.
-// On Windows the file C:/Windows/System32/mcupdate_GenuineIntel.dll is used to load the microcode into the CPU.
-// Ubuntu doesn't update the microcode by default
-// In order to experiment with TSX while waiting for a CPU with a bug free TSX implemenation, it is
-// important to make sure that the TSX instruction set is enabled.
-//
-// T1700 (Xeon E3 1240 v3 CPU) requires version A10 BIOS + mcupdate_GenuineIntel.dll dated 12-11-2010
-//
-
-//
 // NB: gcc needs flags -mrtm -mrdrnd
 //
 
@@ -477,14 +430,6 @@ void waitForThreadsToFinish(UINT nt, THREADH *threadH)
 //
 // Processor monitoring support (PMS)
 //
-// NB: see Intel Performance Counter Monitor v2.5.1
-// NB: simplified for HLE and RTM performance measurement
-//
-// NB: FIXED_CTR0 counts instructions retired (see Vol 3C 35-17)
-// NB: FIXED_CTR1 counts unhalted core cycles
-// NB: FIXED_CTR2 counts unhalted reference cycles
-//
-
 #ifdef WIN32
 
 typedef BOOL(WINAPI *_InitializeOls) ();
