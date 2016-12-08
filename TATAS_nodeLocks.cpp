@@ -239,7 +239,7 @@ void BST::add (Node *n)
     Node* volatile p = root;
     Node lockedNode = *n;
     while (p) {
-        lockedNode = *p;
+        lockedNode = **pp;
         lockedNode.acquireTATAS_node();
         if (n->key < p->key) {
             /*if (p->left == NULL){
@@ -330,7 +330,6 @@ void BST::releaseTATAS() {
 }
 
 void Node::acquireTATAS_node() {
-    cout << "acquiring" << endl;
     while (InterlockedExchange(&lock_node, 1) == 1){
         cout << "acquiring" << endl;
         do {
