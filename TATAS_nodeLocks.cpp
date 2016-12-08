@@ -239,27 +239,32 @@ void BST::add (Node *n)
     Node* volatile p = root;
     Node lockedNode = *n;
     while (p) {
+        lockedNode = **pp;
+        lockedNode.acquireTATAS_node();
         if (n->key < p->key) {
-            if (p->left == NULL){
+            /*if (p->left == NULL){
                 lockedNode = **pp;
                 //cout << "value in lock left: " << lockedNode.key << endl;
                 lockedNode.acquireTATAS_node();
-            }
+            }*/
             pp = &p->left;
         } else if (n->key > p->key) {
-            if (p->right == NULL){
+            /*if (p->right == NULL){
                 lockedNode = **pp;
                 //cout << "value in lock right: " << lockedNode.key << endl;
                 lockedNode.acquireTATAS_node();
-            }
+            }*/
             pp = &p->right;
         } else {
             lockedNode.releaseTATAS_node();
             //releaseTATAS();
             return;
         }
+        lockedNode.releaseTATAS_node();
         p = *pp;
     }
+    lockedNode = **pp;
+    lockedNode.acquireTATAS_node();
     *pp = n;
     lockedNode.releaseTATAS_node();
     //releaseTATAS();
@@ -267,7 +272,7 @@ void BST::add (Node *n)
 
 void BST::remove(INT64 key)
 {
-    acquireTATAS();
+    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     while (p) {
