@@ -247,10 +247,10 @@ void BST::add (Node *n)
             }
             pp = &p->left;
         } else if (n->key > p->key) {
-            if(p->right != NULL){
+            /*if(p->right != NULL){
                 cout << "value in p->right: " << p->right << endl;
-            }
-            else if(p->right == NULL){
+            }*/
+            if(p->right == NULL){
                 cout << "null value " << endl;
             }
             if (&p->right == NULL){
