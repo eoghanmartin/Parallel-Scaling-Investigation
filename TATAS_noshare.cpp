@@ -242,25 +242,25 @@ void BST::add (Node *n)
     while (p) {
         if (n->key < p->key) {
             if (&p->left == NULL){
-                lockedNode = &pp;
-                *lockedNode.acquireTATAS_node();
+                lockedNode = pp;
+                lockedNode.acquireTATAS_node();
             }
             pp = &p->left;
         } else if (n->key > p->key) {
             if (&p->right == NULL){
-                lockedNode = &pp;
-                *lockedNode.acquireTATAS_node();
+                lockedNode = pp;
+                lockedNode.acquireTATAS_node();
             }
             pp = &p->right;
         } else {
-            *lockedNode.releaseTATAS_node();
+            lockedNode.releaseTATAS_node();
             //releaseTATAS();
             return;
         }
         p = *pp;
     }
     *pp = n;
-    *lockedNode.releaseTATAS_node();
+    lockedNode.releaseTATAS_node();
     //releaseTATAS();
 }
 
