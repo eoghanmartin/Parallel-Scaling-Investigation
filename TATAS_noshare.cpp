@@ -40,8 +40,8 @@ using namespace std;
 
 #define ALIGNED_MALLOC(sz, align) _aligned_malloc(sz, align)
 
-#define  MASTER     1
-#define ACCUMULATOR 0
+#define  MASTER     0
+#define ACCUMULATOR 1
 
 clock_t start, stop;
 double elapsed;
@@ -335,60 +335,6 @@ void runOp(UINT randomValue, UINT randomBit) {
     }
 }
 //
-// worker
-//
-void worker(int rank)
-{
-    int thread = rank;
-
-    UINT64 n = 0;
-
-    UINT64 *chooseRandom  = new UINT64;
-    UINT randomValue;
-    UINT randomBit;
-
-    while (1) {
-        for(int y=0; y<NOPS; y++) {
-            randomBit = 0;
-            *chooseRandom = rand(*chooseRandom);
-            randomBit = *chooseRandom % 2;
-            runOp(*chooseRandom % 16, randomBit); //up to 32 branch tree (-16 - 16)
-            /*
-            switch (sharing) {
-                case 0:
-                    runOp(*chooseRandom % 16, randomBit);
-                    break;
-                case 1:
-                    randomValue = *chooseRandom % 256;
-                    runOp(randomValue, randomBit);
-                    break;
-                case 2:
-                    randomValue = *chooseRandom % 4096;
-                    runOp(randomValue, randomBit);
-                    break;
-                case 3:
-                    randomValue = *chooseRandom % 65536;
-                    runOp(randomValue, randomBit);
-                    break;
-                case 4:
-                    randomValue = *chooseRandom % 1048576;
-                    runOp(randomValue, randomBit);
-                    break;
-            }
-            */
-        }
-        n += NOPS;
-        //
-        // check if runtime exceeded
-        //
-        if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
-            break;
-    }
-    ops[thread] = n;
-    BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-    BinarySearchTree->root = NULL;
-}
-//
 // main
 //
 int main()
@@ -439,38 +385,7 @@ int main()
 
     int message;
 
-    if (world_rank == ACCUMULATOR) {
-        /*
-        double cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        while (cont < 3000) {
-            cont = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        }
-        setCommaLocale();
-        //
-        // save results and output summary to console
-        //
-        int thread = 0;
-        double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        for (thread = 2; thread < maxThread; thread++) {
-            r[indx].ops += ops[thread];
-            r[indx].incs += *(GINDX(thread));
-        }
-        r[indx].incs += *(GINDX(maxThread));
-        ops1 = ops[thread]; //r[indx].ops;
-        r[indx].nt = maxThread;
-        r[indx].rt = rt;
-
-        cout << setw(13) << pow(16,1); // sharing+1);
-        cout << setw(10) << maxThread; //nt;
-        cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
-        cout << setw(20) << r[indx].ops;
-        cout << setw(10) << fixed << setprecision(2) << (double) r[indx].ops / ops1;
-        cout << endl;
-
-        cout << endl;
-        */
-    }
-    else if (world_rank == MASTER) {
+    if (world_rank == MASTER) {
         int message_recv[2];
         UINT randomValue_recv;
         UINT randomBit_recv;
@@ -478,8 +393,9 @@ int main()
         UINT64 n = 0;
 
         while(1){
-            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
+            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
                 break;
+            }
             MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
             cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
             randomValue_recv = message_recv[0];
@@ -522,9 +438,7 @@ int main()
         UINT randomValue;
         UINT randomBit;
 
-        printf("Processor %s, rank %d"
-           " out of %d processors\n",
-           processor_name, world_rank, world_size);
+        printf("Processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
 
         while (1) {
             randomBit = 0;
@@ -539,7 +453,7 @@ int main()
             //
             // check if runtime exceeded
             //
-            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > (NSECONDS*2)*1000)
+            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
                 break;
         }
         cout << "Number of ops for process " << world_rank << ": " << n << endl;
