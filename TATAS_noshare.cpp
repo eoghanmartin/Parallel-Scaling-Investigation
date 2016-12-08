@@ -249,6 +249,7 @@ void BST::add (Node *n)
         } else if (n->key > p->key) {
             if (&p->right == NULL){
                 lockedNode = **pp;
+                cout << "value in lock: " << lockedNode.key << endl;
                 lockedNode.acquireTATAS_node();
             }
             pp = &p->right;
@@ -424,7 +425,7 @@ int main()
             }
             MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
             //cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
-            cout << "total ops: " << n << endl;
+            //cout << "total ops: " << n << endl;
             randomValue_recv = message_recv[0];
             randomBit_recv = message_recv[1];
             runOp(randomValue_recv, randomBit_recv);
