@@ -242,14 +242,14 @@ void BST::add (Node *n)
         if (n->key < p->key) {
             if (p->left == NULL){
                 lockedNode = **pp;
-                cout << "value in lock left: " << lockedNode.key << endl;
+                //cout << "value in lock left: " << lockedNode.key << endl;
                 lockedNode.acquireTATAS_node();
             }
             pp = &p->left;
         } else if (n->key > p->key) {
             if (p->right == NULL){
                 lockedNode = **pp;
-                cout << "value in lock right: " << lockedNode.key << endl;
+                //cout << "value in lock right: " << lockedNode.key << endl;
                 lockedNode.acquireTATAS_node();
             }
             pp = &p->right;
