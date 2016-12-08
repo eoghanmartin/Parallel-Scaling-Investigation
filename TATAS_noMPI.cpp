@@ -211,7 +211,6 @@ class Node {
         INT64 volatile key;
         Node* volatile left;
         Node* volatile right;
-        ALIGN(64) volatile long lock_node;
         Node() {key = 0; right = left = NULL;} // default constructor
 };
 

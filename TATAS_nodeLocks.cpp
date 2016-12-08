@@ -263,7 +263,7 @@ void BST::add (Node *n)
         p = *pp;
         lockedNode.releaseTATAS_node();
     }
-    //lockedNode = *p;
+    //lockedNode = **pp;
     //lockedNode.acquireTATAS_node();
     *pp = n;
     //lockedNode.releaseTATAS_node();
@@ -275,19 +275,27 @@ void BST::remove(INT64 key)
     //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
+    Node lockedNode = **pp;
+    
     while (p) {
+        lockedNode.acquireTATAS_node();
         if (key < p->key) {
             pp = &p->left;
         } else if (key > p->key) {
-        pp = &p->right;
+            pp = &p->right;
         } else {
+            lockedNode.releaseTATAS_node();
             break;
         }
         p = *pp;
+        lockedNode.releaseTATAS_node();
+        lockedNode = **pp;
     }
     if (p == NULL)
-        releaseTATAS();
+        //releaseTATAS();
         return;
+    lockedNode = **pp;
+    lockedNode.acquireTATAS_node();
     if (p->left == NULL && p->right == NULL) {
         *pp = NULL; // NO children
     } else if (p->left == NULL) {
@@ -305,7 +313,8 @@ void BST::remove(INT64 key)
         p = r; // node instead
         *ppr = r->right;
     }
-    releaseTATAS();
+    lockedNode.releaseTATAS_node();
+    //releaseTATAS();
 }
 
 void BST::destroy(volatile Node *nextNode)
@@ -364,7 +373,7 @@ void runOp(UINT randomValue, UINT randomBit) {
         BinarySearchTree->add(addNode);
     }
     else {
-        //BinarySearchTree->remove(randomValue);
+        BinarySearchTree->remove(randomValue);
     }
 }
 //
