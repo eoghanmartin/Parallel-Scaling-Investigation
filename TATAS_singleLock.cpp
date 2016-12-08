@@ -456,7 +456,7 @@ int main()
             if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
                 break;
         }
-        cout << "Number of ops for process " << world_rank << ": " << n << endl;
+        //cout << "Number of ops for process " << world_rank << ": " << n << endl;
     }
 
     // Finalize the MPI environment.
