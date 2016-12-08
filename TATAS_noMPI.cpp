@@ -1,5 +1,5 @@
 
-//#include "stdafx.h"                             // pre-compiled headers
+#include "stdafx.h"                             // pre-compiled headers
 #include <iostream>
 #include <iomanip>                              // setprecision
 #include "helper1.h"
