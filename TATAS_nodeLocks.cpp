@@ -275,9 +275,10 @@ void BST::remove(INT64 key)
     //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
-    Node lockedNode = **pp;
+    Node lockedNode = root;
     
     while (p) {
+        lockedNode = **pp;
         lockedNode.acquireTATAS_node();
         if (key < p->key) {
             pp = &p->left;
@@ -289,7 +290,6 @@ void BST::remove(INT64 key)
         }
         p = *pp;
         lockedNode.releaseTATAS_node();
-        lockedNode = **pp;
     }
     if (p == NULL)
         //releaseTATAS();
