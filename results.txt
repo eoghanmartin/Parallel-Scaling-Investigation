@@ -1,11 +1,11 @@
-BST        nt        rt                 	ops       rel
----        --        --                 	---       ---
-16        12      3.00 	     421,455,917,327,045      3.01
+NO MPI
+2s	5,761,284
 
-BST        nt        rt                 ops       	rel
----        --        --                 ---       	---
-16         2        3.00      264,373,690,168   18,761.98
+MPI Single Lock 3 Processes
+2s 	1,490,646
 
-BST        nt        rt                 	ops       rel
----        --        --                 	---       ---
-16         24       3.00   2,104,402,045,052,181     15.01
+MPI Single Lock 20 Processes
+2s 	1,685,166
+
+MPI Single Lock 60 Processes
+2s 	1,158,254
