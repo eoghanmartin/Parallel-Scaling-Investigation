@@ -331,7 +331,7 @@ void runOp(UINT randomValue, UINT randomBit) {
         BinarySearchTree->add(addNode);
     }
     else {
-        BinarySearchTree->remove(randomValue);
+        //BinarySearchTree->remove(randomValue);
     }
 }
 //
