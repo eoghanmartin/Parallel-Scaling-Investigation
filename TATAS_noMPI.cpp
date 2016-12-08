@@ -1,6 +1,5 @@
 
 //#include "stdafx.h"                             // pre-compiled headers
-#include <mpi.h>
 #include <iostream>
 #include <iomanip>                              // setprecision
 #include "helper1.h"
@@ -366,8 +365,6 @@ void runOp(UINT randomValue, UINT randomBit) {
 //
 int main()
 {
-    MPI_Init(NULL, NULL);
-
     setCommaLocale();
     //
     // get cache info
@@ -390,100 +387,46 @@ int main()
     UINT64 ops1 = 1;
 
     start = clock();
-    // Initialize the MPI environment
 
-    MPI_Status status;
-    MPI_Status status_master;
+    UINT64 n = 0;
 
-    // Get the number of processes
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    UINT64 *chooseRandom  = new UINT64;
+    UINT randomValue;
+    UINT randomBit;
 
-    // Get the rank of the process
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
-    // Get the name of the processor
-    char processor_name[MPI_MAX_PROCESSOR_NAME];
-    int name_len;
-    MPI_Get_processor_name(processor_name, &name_len);
-
-    int message;
-
-    if (world_rank == MASTER) {
-        int message_recv[2];
-        UINT randomValue_recv;
-        UINT randomBit_recv;
-
-        UINT64 n = 0;
-
-        while(1){
-            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
-                break;
-            }
-            MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
-            //cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
-            //cout << "total ops: " << n << endl;
-            randomValue_recv = message_recv[0];
-            randomBit_recv = message_recv[1];
-            runOp(randomValue_recv, randomBit_recv);
-            ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
-            MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
-            n += 1;
-        }
-        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-        BinarySearchTree->root = NULL;
-
-        cout << setw(10) << "rt";
-        cout << setw(20) << "ops";
-        cout << endl;
-
-        cout << setw(10) << "--";        // rt
-        cout << setw(20) << "---";       // ops
-        cout << endl;
-
-        double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        r[0].ops = n;
-
-        cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
-        cout << setw(20) << r[0].ops;
-        cout << endl;
-
-        cout << endl;
+    while (1) {
+        randomBit = 0;
+        *chooseRandom = rand(*chooseRandom);
+        randomBit = *chooseRandom % 2;
+        
+        runOp(*chooseRandom % 16, randomBit);
+        
+        n += 1;
+        //
+        // check if runtime exceeded
+        //
+        if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
+            break;
     }
-    else {
-        int message_send[2];
+    BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+    BinarySearchTree->root = NULL;
 
-        UINT64 n = 0;
+    cout << setw(10) << "rt";
+    cout << setw(20) << "ops";
+    cout << endl;
 
-        UINT64 *chooseRandom  = new UINT64;
-        UINT randomValue;
-        UINT randomBit;
+    cout << setw(10) << "--";        // rt
+    cout << setw(20) << "---";       // ops
+    cout << endl;
 
-        printf("Processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
+    double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+    r[0].ops = n;
 
-        while (1) {
-            randomBit = 0;
-            *chooseRandom = rand(*chooseRandom);
-            randomBit = *chooseRandom % 2;
-            message_send[0] = *chooseRandom % 16;
-            message_send[1] = randomBit;
-            MPI_Send(&message_send, 2, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
-            MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
-            //cout << "This should be MASTER: " << message << endl;
-            n += 1;
-            //
-            // check if runtime exceeded
-            //
-            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
-                break;
-        }
-        cout << "Number of ops for process " << world_rank << ": " << n << endl;
-    }
+    cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
+    cout << setw(20) << r[0].ops;
+    cout << endl;
 
-    // Finalize the MPI environment.
-    MPI_Finalize();
-
+    cout << endl;
 }
 
 // eof
