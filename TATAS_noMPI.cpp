@@ -309,18 +309,6 @@ void BST::releaseTATAS() {
     lock = 0;
 }
 
-void Node::acquireTATAS_node() {
-    while (InterlockedExchange(&lock_node, 1) == 1){
-        do {
-            _mm_pause();
-        } while (lock_node == 1);
-    }
-}
-
-void Node::releaseTATAS_node() {
-    lock_node = 0;
-}
-
 typedef struct {
     int sharing;                                // sharing
     int nt;                                     // # threads
