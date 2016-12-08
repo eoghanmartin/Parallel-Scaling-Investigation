@@ -275,7 +275,7 @@ void BST::remove(INT64 key)
     //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
-    Node lockedNode = **pp;
+    Node lockedNode = *root;
     
     while (p) {
         lockedNode.acquireTATAS_node();
