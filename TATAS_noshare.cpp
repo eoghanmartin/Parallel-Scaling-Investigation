@@ -397,7 +397,8 @@ int main()
                 break;
             }
             MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
-            cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
+            //cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
+            cout << "total ops: " << n << endl;
             randomValue_recv = message_recv[0];
             randomBit_recv = message_recv[1];
             runOp(randomValue_recv, randomBit_recv);
@@ -448,7 +449,7 @@ int main()
             message_send[1] = randomBit;
             MPI_Send(&message_send, 2, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
             MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
-            cout << "This should be MASTER: " << message << endl;
+            //cout << "This should be MASTER: " << message << endl;
             n += 1;
             //
             // check if runtime exceeded
