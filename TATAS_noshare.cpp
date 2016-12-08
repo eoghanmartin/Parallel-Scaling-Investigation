@@ -47,7 +47,6 @@ clock_t start, stop;
 double elapsed;
 
 int lineSz;                                     // cache line size
-int maxThread;                                  // max # of threads
 
 THREADH *threadH;                               // thread handles
 UINT64 *ops;                                    // for ops per thread
@@ -241,7 +240,7 @@ void BST::add (Node *n)
     Node lockedNode = *n;
     while (p) {
         if (n->key < p->key) {
-            if (&p->left == NULL){
+            if (p->left == NULL){
                 lockedNode = **pp;
                 lockedNode.acquireTATAS_node();
             }
@@ -253,7 +252,7 @@ void BST::add (Node *n)
             if(p->right == NULL){
                 cout << "null value " << endl;
             }
-            if (&p->right == NULL){
+            if (p->right == NULL){
                 lockedNode = **pp;
                 cout << "value in lock: " << lockedNode.key << endl;
                 lockedNode.acquireTATAS_node();
@@ -375,8 +374,6 @@ int main()
     MPI_Init(NULL, NULL);
 
     setCommaLocale();
-
-    maxThread = 4;
     //
     // get cache info
     //
@@ -442,18 +439,15 @@ int main()
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         BinarySearchTree->root = NULL;
 
-        cout << setw(10) << "nt";
         cout << setw(10) << "rt";
         cout << setw(20) << "ops";
         cout << endl;
 
-        cout << setw(10) << "--";        // nt
         cout << setw(10) << "--";        // rt
         cout << setw(20) << "---";       // ops
         cout << endl;
 
         double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        r[0].nt = maxThread;
         r[0].ops = n;
 
         cout << setw(10) << r[0].nt ; //nt;
