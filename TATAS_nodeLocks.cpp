@@ -332,6 +332,7 @@ void BST::releaseTATAS() {
 void Node::acquireTATAS_node() {
     while (InterlockedExchange(&lock_node, 1) == 1){
         do {
+            cout << "acquiring..." << endl;
             _mm_pause();
         } while (lock_node == 1);
     }
