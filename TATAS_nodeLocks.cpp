@@ -234,7 +234,6 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = *n;
@@ -242,37 +241,21 @@ void BST::add (Node *n)
         lockedNode = **pp;
         lockedNode.acquireTATAS_node();
         if (n->key < p->key) {
-            /*if (p->left == NULL){
-                lockedNode = **pp;
-                //cout << "value in lock left: " << lockedNode.key << endl;
-                lockedNode.acquireTATAS_node();
-            }*/
             pp = &p->left;
         } else if (n->key > p->key) {
-            /*if (p->right == NULL){
-                lockedNode = **pp;
-                //cout << "value in lock right: " << lockedNode.key << endl;
-                lockedNode.acquireTATAS_node();
-            }*/
             pp = &p->right;
         } else {
             lockedNode.releaseTATAS_node();
-            //releaseTATAS();
             return;
         }
         p = *pp;
         lockedNode.releaseTATAS_node();
     }
-    //lockedNode = **pp;
-    //lockedNode.acquireTATAS_node();
     *pp = n;
-    //lockedNode.releaseTATAS_node();
-    //releaseTATAS();
 }
 
 void BST::remove(INT64 key)
 {
-    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = Node();
@@ -293,7 +276,6 @@ void BST::remove(INT64 key)
         lockedNode.releaseTATAS_node();
     }
     if (p == NULL){
-        //releaseTATAS();
         return;
     }
     cout << "test on remove" << endl;
@@ -317,7 +299,6 @@ void BST::remove(INT64 key)
         *ppr = r->right;
     }
     lockedNode.releaseTATAS_node();
-    //releaseTATAS();
 }
 
 void BST::destroy(volatile Node *nextNode)
