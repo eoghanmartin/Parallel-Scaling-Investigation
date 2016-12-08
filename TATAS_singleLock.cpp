@@ -237,7 +237,7 @@ void BST::add (Node *n)
     Node* volatile p = root;
     while (p) {
         if (n->key < p->key) {
-        pp = &p->left;
+            pp = &p->left;
         } else if (n->key > p->key) {
             pp = &p->right;
             } else {
@@ -398,7 +398,6 @@ int main()
             }
             MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
             //cout << "message recieved is: " << message_recv[0] << " and " << message_recv[1] << endl;
-            cout << "total ops: " << n << endl;
             randomValue_recv = message_recv[0];
             randomBit_recv = message_recv[1];
             runOp(randomValue_recv, randomBit_recv);
@@ -439,7 +438,7 @@ int main()
         UINT randomValue;
         UINT randomBit;
 
-        printf("Processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
+        //printf("Processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
 
         while (1) {
             randomBit = 0;
