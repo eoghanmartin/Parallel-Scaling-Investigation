@@ -278,6 +278,7 @@ void BST::remove(INT64 key)
     Node lockedNode = Node();
     
     while (p) {
+        cout << "test on remove" << endl;
         lockedNode = **pp;
         lockedNode.acquireTATAS_node();
         if (key < p->key) {
