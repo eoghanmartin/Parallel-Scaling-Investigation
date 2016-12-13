@@ -405,6 +405,7 @@ int main()
     int numprocs, rank, namelen;
     int iam = 0, np = 1, thread_count =0;
     INT64 total_count[64] = {};
+    int numThreads = 0;
 
     //if (world_rank == MASTER) {
         int message_recv[2];
@@ -424,7 +425,7 @@ int main()
 
             #pragma omp parallel default(shared) private(iam, np, thread_count)
             {
-                np = omp_get_num_threads();
+                np = numThreads = omp_get_num_threads();
                 iam = omp_get_thread_num();
                 thread_count = 0;
                 ops[iam] = 0;
@@ -460,7 +461,9 @@ int main()
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         BinarySearchTree->root = NULL;
 
-        for (int thread = 0; thread < omp_get_num_threads(); thread++) {
+        cout << setw(10) << "rt";
+
+        for (int thread = 0; thread < numThreads; thread++) {
             n += total_count[thread];
         }
 
