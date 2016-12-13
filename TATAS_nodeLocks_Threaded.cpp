@@ -1,6 +1,6 @@
 
 //#include "stdafx.h"                             // pre-compiled headers
-#include <mpi.h>
+//#include <mpi.h>
 #include <omp.h>
 
 #include <iostream>
