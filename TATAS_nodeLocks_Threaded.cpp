@@ -429,7 +429,7 @@ int main()
                 iam = omp_get_thread_num();
                 thread_count = 0;
                 ops[iam] = 0;
-                printf("Hello from thread %d out of %d\n", iam, np);
+                //printf("Hello from thread %d out of %d\n", iam, np);
 
                 while(1){
                     if ((double)(time(0) - t) > NSECONDS-1) {
@@ -458,8 +458,8 @@ int main()
                 total_count[iam] += thread_count;
             }
         //}
-        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-        BinarySearchTree->root = NULL;
+        //BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+        //BinarySearchTree->root = NULL;
 
         cout << setw(10) << "rt";
 
