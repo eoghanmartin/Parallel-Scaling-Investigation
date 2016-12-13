@@ -454,14 +454,13 @@ int main()
                     //n += 1;
                     //cout << n << endl;
                 }
-                cout << thread_count << endl;
                 total_count[iam] += thread_count;
             }
         //}
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         BinarySearchTree->root = NULL;
 
-        for (int thread = 0; thread < np; thread++) {
+        for (int thread = 0; thread < omp_get_num_threads(); thread++) {
             n += total_count[thread];
         }
 
