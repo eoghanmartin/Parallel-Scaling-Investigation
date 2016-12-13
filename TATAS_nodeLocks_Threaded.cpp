@@ -406,23 +406,26 @@ int main()
 
         UINT64 n = 0;
 
-        #pragma omp parallel default(shared) private(iam, np)
-        {
-            np = omp_get_num_threads();
-            iam = omp_get_thread_num();
-            //printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
+        while(1){
 
-            while(1){
-                if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
-                    break;
-                }
-                MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
-                randomBit_recv = message_recv[1];
-                runOp(randomValue_recv, randomBit_recv);
-                ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
-                MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
-                n += 1;
-                cout << ops << endl;
+            #pragma omp parallel default(shared) private(iam, np)
+            {
+                np = omp_get_num_threads();
+                iam = omp_get_thread_num();
+                //printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
+
+                //while(1){
+                    if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
+                        break;
+                    }
+                    MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
+                    randomBit_recv = message_recv[1];
+                    runOp(randomValue_recv, randomBit_recv);
+                    ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
+                    MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
+                    n += 1;
+                    cout << n << endl;
+                //}
             }
         }
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
