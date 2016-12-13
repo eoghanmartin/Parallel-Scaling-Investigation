@@ -427,14 +427,14 @@ int main()
                 //printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
 
                 while(1){
-                    if ((double)(time(0) - t) > NSECONDS) {
+                    if ((double)(time(0) - t) > NSECONDS-1) {
                         break;
                     }
                     //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
                     //    break;
                     //}
                     //cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
-                    cout << "time(0) - t: " << (double)(time(0) - t) << endl;
+                    //cout << "time(0) - t: " << (double)(time(0) - t) << endl;
                     /*cout << "time(0): " << (double)(time(0)) << endl;
                     cout << "t: " << (double)(t) << endl;
                     cout << endl;*/
@@ -462,7 +462,8 @@ int main()
         cout << setw(20) << "---";       // ops
         cout << endl;
 
-        double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+        //double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
+        double rt = (double)(time(0) - t);
 
         cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
         cout << setw(20) << n;
