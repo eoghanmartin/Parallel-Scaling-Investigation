@@ -440,7 +440,7 @@ int main()
                     //    break;
                     //}
                     //cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
-                    //cout << "time(0) - t: " << (double)(time(0) - t) << endl;
+                    cout << "time(0) - t: " << (double)(time(0) - t) << endl;
                     /*cout << "time(0): " << (double)(time(0)) << endl;
                     cout << "t: " << (double)(t) << endl;
                     cout << endl;*/
