@@ -425,7 +425,7 @@ int main()
                 np = omp_get_num_threads();
                 iam = omp_get_thread_num();
                 ops[iam] = 0;
-                //printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
+                printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
 
                 while(1){
                     if ((double)(time(0) - t) > NSECONDS-1) {
@@ -446,6 +446,7 @@ int main()
                     randomBit = *chooseRandom % 2;
                     runOp(*chooseRandom % 16, randomBit_recv);
                     ops[iam] += 1;
+                    cout << ops[iam] << endl;
                     //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
                     //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
                     //n += 1;
