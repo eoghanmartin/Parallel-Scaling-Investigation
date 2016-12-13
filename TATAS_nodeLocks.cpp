@@ -335,9 +335,6 @@ void Node::releaseTATAS_node() {
     lock_node = 0;
 }
 
-Result *r;                                      // results
-UINT indx;                                      // results index
-
 volatile VINT *g;                               // NB: position of volatile
 
 void runOp(UINT randomValue, UINT randomBit) {
@@ -370,8 +367,6 @@ int main()
     // NB: each element in g is stored in a different cache line to stop false sharing
     //
     ops = (UINT64*) malloc(lineSz);                   // for ops per thread
-
-    indx = 0;
 
     UINT64 ops1 = 1;
 
