@@ -455,12 +455,13 @@ int main()
                     //cout << n << endl;
                 }
                 total_count[iam] += thread_count;
+                cout << "rt1";
             }
         //}
         //BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         //BinarySearchTree->root = NULL;
 
-        cout << setw(10) << "rt";
+        cout << "rt2";
 
         for (int thread = 0; thread < numThreads; thread++) {
             n += total_count[thread];
