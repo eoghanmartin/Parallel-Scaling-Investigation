@@ -421,11 +421,11 @@ int main()
                     if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
                         break;
                     }
-                    MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
-                    randomBit_recv = message_recv[1];
-                    runOp(randomValue_recv, randomBit_recv);
-                    ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
-                    MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
+                    //MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
+                    //randomBit_recv = message_recv[1];
+                    //runOp(randomValue_recv, randomBit_recv);
+                    //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
+                    //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
                     n += 1;
                     cout << n << endl;
                 }
