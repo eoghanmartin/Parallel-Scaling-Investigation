@@ -444,15 +444,20 @@ int main()
                     *chooseRandom = rand(*chooseRandom);
                     randomBit = *chooseRandom % 2;
                     runOp(*chooseRandom % 16, randomBit_recv);
+                    ops[iam] += 1;
                     //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
                     //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
-                    n += 1;
+                    //n += 1;
                     //cout << n << endl;
                 }
             }
         //}
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         BinarySearchTree->root = NULL;
+
+        for (int thread = 0; thread < np; thread++) {
+            n += ops[thread];
+        }
 
         cout << setw(10) << "rt";
         cout << setw(20) << "ops";
