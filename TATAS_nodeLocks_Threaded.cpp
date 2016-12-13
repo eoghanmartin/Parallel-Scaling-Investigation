@@ -423,7 +423,7 @@ int main()
             //            break;
             //        }
 
-            #pragma omp parallel default(shared) private(iam, np, thread_count)
+            #pragma omp parallel default(shared) private(iam, np, thread_count, randomBit, *chooseRandom)
             {
                 np = numThreads = omp_get_num_threads();
                 iam = omp_get_thread_num();
@@ -448,7 +448,7 @@ int main()
                     randomBit = 0;
                     *chooseRandom = rand(*chooseRandom);
                     randomBit = *chooseRandom % 2;
-                    runOp(*chooseRandom % 16, randomBit_recv);
+                    runOp(*chooseRandom % 16, randomBit);
                     thread_count += 1;
                     //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
                     //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
