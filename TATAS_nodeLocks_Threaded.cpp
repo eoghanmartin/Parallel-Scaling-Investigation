@@ -433,6 +433,7 @@ int main()
 
                 while(1){
                     if ((double)(time(0) - t) > NSECONDS-1) {
+                        cout << "rt0";
                         break;
                     }
                     //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
