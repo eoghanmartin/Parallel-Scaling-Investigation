@@ -465,7 +465,7 @@ int main()
         //double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
         double rt = (double)(time(0) - t);
 
-        cout << setw(10) << fixed << setprecision(2) << (double) rt / 1000;
+        cout << setw(10) << fixed << setprecision(2) << (double) rt;
         cout << setw(20) << n;
         cout << endl;
 
