@@ -425,6 +425,7 @@ int main()
                     if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
                         break;
                     }
+                    cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
                     //MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
                     //randomBit_recv = message_recv[1];
                     randomBit = 0;
