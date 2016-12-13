@@ -377,6 +377,7 @@ int main()
     //
     ops = (UINT64*) malloc(lineSz);                   // for ops per thread
 
+
     UINT64 ops1 = 1;
 
     start = clock();
@@ -402,7 +403,8 @@ int main()
     int message;
 
     int numprocs, rank, namelen;
-    int iam = 0, np = 1;
+    int iam = 0, np = 1, thread_count =0;
+    INT64 total_count[64] = {};
 
     //if (world_rank == MASTER) {
         int message_recv[2];
@@ -420,10 +422,11 @@ int main()
             //            break;
             //        }
 
-            #pragma omp parallel default(shared) private(iam, np)
+            #pragma omp parallel default(shared) private(iam, np, thread_count)
             {
                 np = omp_get_num_threads();
                 iam = omp_get_thread_num();
+                thread_count = 0;
                 ops[iam] = 0;
                 printf("Hello from thread %d out of %d\n", iam, np);
 
@@ -445,19 +448,20 @@ int main()
                     *chooseRandom = rand(*chooseRandom);
                     randomBit = *chooseRandom % 2;
                     runOp(*chooseRandom % 16, randomBit_recv);
-                    ops[iam] += 1;
+                    thread_count += 1;
                     //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
                     //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
                     //n += 1;
                     //cout << n << endl;
                 }
+                total_count[iam] += thread_count;
             }
         //}
         BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
         BinarySearchTree->root = NULL;
 
         for (int thread = 0; thread < np; thread++) {
-            n += ops[thread];
+            n += total_count[thread];
         }
 
         cout << setw(10) << "rt";
