@@ -423,7 +423,7 @@ int main()
             //            break;
             //        }
 
-            #pragma omp parallel default(shared) private(iam, np, thread_count, randomBit, *chooseRandom)
+            #pragma omp parallel private(iam, np, thread_count, randomBit, *chooseRandom)
             {
                 np = numThreads = omp_get_num_threads();
                 iam = omp_get_thread_num();
