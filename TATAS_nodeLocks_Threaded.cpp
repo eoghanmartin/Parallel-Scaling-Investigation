@@ -414,7 +414,7 @@ int main()
 
         UINT64 n = 0;
 
-        UINT64 chooseRandom  = new UINT64;
+        UINT64 *chooseRandom  = new UINT64;
         UINT randomValue;
         UINT randomBit;
 
@@ -423,7 +423,7 @@ int main()
             //            break;
             //        }
 
-            #pragma omp parallel private(iam, np, thread_count, randomBit, chooseRandom)
+            #pragma omp parallel private(iam, np, thread_count, randomBit)
             {
                 np = numThreads = omp_get_num_threads();
                 iam = omp_get_thread_num();
@@ -445,9 +445,8 @@ int main()
                     cout << endl;*/
                     //MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
                     //randomBit_recv = message_recv[1];
-                    randomBit = 0;
-                    chooseRandom = rand(chooseRandom);
-                    randomBit = chooseRandom % 2;
+                    *chooseRandom = rand(*chooseRandom);
+                    randomBit = *chooseRandom % 2;
                     runOp(*chooseRandom % 16, randomBit);
                     thread_count += 1;
                     //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
