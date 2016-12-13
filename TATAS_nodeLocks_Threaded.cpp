@@ -359,7 +359,7 @@ void runOp(UINT randomValue, UINT randomBit) {
 //
 int main()
 {
-    MPI_Init(NULL, NULL);
+    //MPI_Init(NULL, NULL);
 
     setCommaLocale();
     //
@@ -378,28 +378,28 @@ int main()
     start = clock();
     // Initialize the MPI environment
 
-    MPI_Status status;
-    MPI_Status status_master;
+    //MPI_Status status;
+    //MPI_Status status_master;
 
     // Get the number of processes
     int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    //MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
     // Get the rank of the process
     int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    //MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
     // Get the name of the processor
-    char processor_name[MPI_MAX_PROCESSOR_NAME];
+    //char processor_name[MPI_MAX_PROCESSOR_NAME];
     int name_len;
-    MPI_Get_processor_name(processor_name, &name_len);
+    //MPI_Get_processor_name(processor_name, &name_len);
 
     int message;
 
     int numprocs, rank, namelen;
     int iam = 0, np = 1;
 
-    if (world_rank == MASTER) {
+    //if (world_rank == MASTER) {
         int message_recv[2];
         UINT randomValue_recv;
         UINT randomBit_recv;
@@ -456,7 +456,7 @@ int main()
         cout << endl;
 
         cout << endl;
-    }
+    /*}
     else {
         int message_send[2];
 
@@ -481,10 +481,10 @@ int main()
             if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
                 break;
         }
-    }
+    }*/
 
     // Finalize the MPI environment.
-    MPI_Finalize();
+    //MPI_Finalize();
 
 }
 
