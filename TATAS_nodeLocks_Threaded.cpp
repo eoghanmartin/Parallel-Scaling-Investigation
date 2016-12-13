@@ -1,6 +1,8 @@
 
 //#include "stdafx.h"                             // pre-compiled headers
 #include <mpi.h>
+#include <omp.h>
+
 #include <iostream>
 #include <iomanip>                              // setprecision
 #include "helper1.h"
@@ -391,12 +393,23 @@ int main()
 
     int message;
 
+    int numprocs, rank, namelen;
+    int iam = 0, np = 1;
+
     if (world_rank == MASTER) {
         int message_recv[2];
         UINT randomValue_recv;
         UINT randomBit_recv;
 
         UINT64 n = 0;
+
+        #pragma omp parallel default(shared) private(iam, np)
+        {
+            np = omp_get_num_threads();
+            iam = omp_get_thread_num();
+            printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
+        }
+  /*
 
         while(1){
             if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
@@ -427,6 +440,8 @@ int main()
         cout << endl;
 
         cout << endl;
+
+        */
     }
     else {
         int message_send[2];
