@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string>
 
+#include <ctime>
+
 #include <termios.h>        //
 #include <unistd.h>         //
 #include <limits.h>         // HOST_NAME_MAX
@@ -47,6 +49,8 @@ using namespace std;
 
 clock_t start, stop;
 double elapsed;
+
+time_t t;
 
 int lineSz;                                     // cache line size
 
@@ -376,6 +380,7 @@ int main()
     UINT64 ops1 = 1;
 
     start = clock();
+    t = time(0);
     // Initialize the MPI environment
 
     //MPI_Status status;
@@ -422,10 +427,17 @@ int main()
                 //printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
 
                 while(1){
-                    if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
+                    if ((double)(time(0) - t) > NSECONDS) {
                         break;
                     }
-                    cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
+                    //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
+                    //    break;
+                    //}
+                    //cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
+                    cout << "time(0) - t: " << (double)(time(0) - t) << endl;
+                    cout << "time(0): " << (double)(time(0)) << endl;
+                    cout << "t: " << (double)(t) << endl;
+                    cout << endl;
                     //MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
                     //randomBit_recv = message_recv[1];
                     randomBit = 0;
