@@ -433,8 +433,8 @@ int main()
                     runOp(*chooseRandom % 16, randomBit_recv);
                     //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
                     //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
-                    n += 1;
-                    cout << n << endl;
+                    //n += 1;
+                    //cout << n << endl;
                 }
             }
         //}
