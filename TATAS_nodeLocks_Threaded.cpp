@@ -425,7 +425,7 @@ int main()
                 np = omp_get_num_threads();
                 iam = omp_get_thread_num();
                 ops[iam] = 0;
-                printf("Hello from thread %d out of %d from process %d out of %d on %s\n", iam, np, rank, numprocs, processor_name);
+                printf("Hello from thread %d out of %d\n", iam, np);
 
                 while(1){
                     if ((double)(time(0) - t) > NSECONDS-1) {
