@@ -242,10 +242,10 @@ void BST::add (Node *n)
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = *n;
-    //acquireTATAS_node(root);
+    acquireTATAS_node(root);
     while (p) {
-        lockedNode = **pp;
-        lockedNode.acquireTATAS_node();
+        //lockedNode = **pp;
+        //lockedNode.acquireTATAS_node();
         if (n->key < p->key) {
             pp = &p->left;
         } else if (n->key > p->key) {
