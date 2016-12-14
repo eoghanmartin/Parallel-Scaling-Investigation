@@ -241,7 +241,7 @@ void BST::add (Node *n)
     //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
-    Node lockedNode = **pp;
+    Node lockedNode = *n;
     //acquireTATAS_node(root);
     while (p) {
         lockedNode = **pp;
@@ -379,9 +379,6 @@ int main()
 
     lineSz = getCacheLineSz();
     ops = (UINT64*) malloc(lineSz);                   // for ops per thread
-
-
-    UINT64 ops1 = 1;
 
     t = time(0);
  
