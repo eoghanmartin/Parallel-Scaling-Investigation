@@ -434,7 +434,6 @@ omp_set_num_threads(4);
 
                 while(1){
                     if ((double)(time(0) - t) > NSECONDS-1) {
-                        cout << "rt0";
                         break;
                     }
                     //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
@@ -457,11 +456,10 @@ omp_set_num_threads(4);
                     //cout << n << endl;
                 }
                 total_count[iam] = thread_count;
-                cout << "rt1: " <<  total_count[iam] << endl;
             }
         //}
-        //BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-        //BinarySearchTree->root = NULL;
+        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+        BinarySearchTree->root = NULL;
 
         cout << "rt2";
 
