@@ -363,6 +363,9 @@ int main()
     setCommaLocale();
     t = time(0);
 
+    lineSz = getCacheLineSz();
+    ops = (UINT64*) malloc(lineSz);
+
     UINT64 n = 0;
 
     int iam = 0, np = 1, thread_count =0;
