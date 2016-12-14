@@ -455,7 +455,7 @@ int main()
                     //n += 1;
                     //cout << n << endl;
                 }
-                total_count[iam] = thread_count;
+                //total_count[iam] = thread_count;
                 cout << "rt1: " <<  total_count[iam] << endl;
             }
         //}
