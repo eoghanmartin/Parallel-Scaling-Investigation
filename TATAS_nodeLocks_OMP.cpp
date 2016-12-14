@@ -237,6 +237,7 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
+    cout << "Gettingt lock..." << endl;
     acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
