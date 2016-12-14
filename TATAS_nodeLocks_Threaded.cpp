@@ -240,26 +240,26 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    acquireTATAS();
+    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
-    //Node lockedNode = *n;
+    Node lockedNode = *n;
     while (p) {
-        //lockedNode = **pp;
-        //lockedNode.acquireTATAS_node();
+        lockedNode = **pp;
+        lockedNode.acquireTATAS_node();
         if (n->key < p->key) {
             pp = &p->left;
         } else if (n->key > p->key) {
             pp = &p->right;
         } else {
-            releaseTATAS();
-            //lockedNode.releaseTATAS_node();
+            //releaseTATAS();
+            lockedNode.releaseTATAS_node();
             return;
         }
         p = *pp;
-        //lockedNode.releaseTATAS_node();
+        lockedNode.releaseTATAS_node();
     }
-    releaseTATAS();
+    //releaseTATAS();
     *pp = n;
 }
 
