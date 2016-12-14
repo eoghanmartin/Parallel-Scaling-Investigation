@@ -232,6 +232,7 @@ class BST {
         void releaseTATAS();  //HLE functionality added to BST class
         void acquireTATAS();
         void acquireTATAS_node(Node* pp);
+        void releaseTATAS_node(Node* pp);
 };
 
 BST *BinarySearchTree = new BST;
@@ -252,11 +253,13 @@ void BST::add (Node *n)
             pp = &p->right;
         } else {
             //releaseTATAS();
-            lockedNode.releaseTATAS_node();
+            //lockedNode.releaseTATAS_node();
+            releaseTATAS_node(p);
             return;
         }
+        releaseTATAS_node(p);
         p = *pp;
-        lockedNode.releaseTATAS_node();
+        //lockedNode.releaseTATAS_node();
     }
     //releaseTATAS();
     *pp = n;
@@ -345,11 +348,16 @@ void BST::acquireTATAS_node(Node* pp) {
         volatile long int *p = &pp->lock_node;
         while (InterlockedExchange(&pp->lock_node, 1) == 1){
             do {
-                cout << "acquiring" << endl;
+                //cout << "acquiring" << endl;
                 _mm_pause();
             } while (*p == 1);
         }
     }
+}
+
+void BST::releaseTATAS_node(Node* pp) {
+    volatile long int *p = &pp->lock_node;
+    *p = 0;
 }
 
 void Node::releaseTATAS_node() {
