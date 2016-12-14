@@ -395,6 +395,7 @@ int main()
             thread_count += 1;
         }
         total_count[iam] = thread_count;
+        #pragma omp taskwait
     }
 
     BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
