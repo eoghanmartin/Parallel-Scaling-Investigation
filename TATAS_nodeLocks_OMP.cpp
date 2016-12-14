@@ -237,11 +237,12 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    cout << "Gettingt lock..." << endl;
-    acquireTATAS();
+    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = *n;
+    lockedNode = **pp;
+    lockedNode.acquireTATAS_node();
     while (p) {
         //lockedNode = **pp;
         //lockedNode.acquireTATAS_node();
