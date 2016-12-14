@@ -237,7 +237,7 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    acquireTATAS();
+    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     //Node lockedNode = *n;
@@ -249,14 +249,14 @@ void BST::add (Node *n)
         } else if (n->key > p->key) {
             pp = &p->right;
         } else {
-            releaseTATAS();
+            //releaseTATAS();
             //lockedNode.releaseTATAS_node();
             return;
         }
         p = *pp;
         //lockedNode.releaseTATAS_node();
     }
-    releaseTATAS();
+    //releaseTATAS();
     *pp = n;
 }
 
@@ -284,7 +284,6 @@ void BST::remove(INT64 key)
     if (p == NULL){
         return;
     }
-    cout << "test on remove" << endl;
     lockedNode = *p;
     lockedNode.acquireTATAS_node();
     if (p->left == NULL && p->right == NULL) {
