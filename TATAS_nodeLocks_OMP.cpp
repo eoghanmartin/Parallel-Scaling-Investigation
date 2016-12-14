@@ -399,7 +399,7 @@ int main()
     UINT64 *chooseRandom  = new UINT64;
     UINT randomBit;
     omp_set_dynamic(0);     // Explicitly disable dynamic teams
-    omp_set_num_threads(4);
+    omp_set_num_threads(8);
     #pragma omp parallel private(iam, np, thread_count, randomBit)
     {
         np = numThreads = omp_get_num_threads();
