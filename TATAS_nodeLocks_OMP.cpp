@@ -345,7 +345,7 @@ void BST::acquireTATAS_node(Node* pp) {
         do {
             cout << "acquiring" << endl;
             _mm_pause();
-        } while (p == 1);
+        } while (*p == 1);
     }
 }
 
