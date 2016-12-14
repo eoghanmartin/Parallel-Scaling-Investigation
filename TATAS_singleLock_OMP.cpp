@@ -47,9 +47,6 @@ using namespace std;
 #define  MASTER     0
 #define ACCUMULATOR 1
 
-clock_t start, stop;
-double elapsed;
-
 time_t t;
 
 int lineSz;                                     // cache line size
@@ -363,153 +360,59 @@ void runOp(UINT randomValue, UINT randomBit) {
 //
 int main()
 {
-    //MPI_Init(NULL, NULL);
-
     setCommaLocale();
-    //
-    // get cache info
-    //
-    lineSz = getCacheLineSz();
-    //
-    // allocate global variable
-    //
-    // NB: each element in g is stored in a different cache line to stop false sharing
-    //
-    ops = (UINT64*) malloc(lineSz);                   // for ops per thread
-
-
-    UINT64 ops1 = 1;
-
-    start = clock();
     t = time(0);
-    // Initialize the MPI environment
 
-    //MPI_Status status;
-    //MPI_Status status_master;
-
-    // Get the number of processes
-    int world_size;
-    //MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-    // Get the rank of the process
-    int world_rank;
-    //MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
-    // Get the name of the processor
-    //char processor_name[MPI_MAX_PROCESSOR_NAME];
-    int name_len;
-    //MPI_Get_processor_name(processor_name, &name_len);
-
-    int message;
-
-    int numprocs, rank, namelen;
     int iam = 0, np = 1, thread_count =0;
     INT64 total_count[64] = {};
     int numThreads = 0;
 
-    //if (world_rank == MASTER) {
-        int message_recv[2];
-        UINT randomValue_recv;
-        UINT randomBit_recv;
+    UINT64 *chooseRandom  = new UINT64;
+    UINT randomBit;
 
-        UINT64 n = 0;
+    omp_set_dynamic(0);     // Explicitly disable dynamic teams
+    omp_set_num_threads(16);
+    #pragma omp parallel private(iam, np, thread_count, randomBit)
+    {
+        np = numThreads = omp_get_num_threads();
+        iam = omp_get_thread_num();
+        thread_count = 0;
+        ops[iam] = 0;
 
-        UINT64 *chooseRandom  = new UINT64;
-        UINT randomValue;
-        UINT randomBit;
-
-        //while(1){
-            //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
-            //            break;
-            //        }
-omp_set_dynamic(0);     // Explicitly disable dynamic teams
-omp_set_num_threads(4);
-            #pragma omp parallel private(iam, np, thread_count, randomBit)
-            {
-                np = numThreads = omp_get_num_threads();
-                iam = omp_get_thread_num();
-                thread_count = 0;
-                ops[iam] = 0;
-                //printf("Hello from thread %d out of %d\n", iam, np);
-
-                while(1){
-                    if ((double)(time(0) - t) > NSECONDS-1) {
-                        break;
-                    }
-                    //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
-                    //    break;
-                    //}
-                    //cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
-                    //cout << "time(0) - t: " << (double)(time(0) - t) << endl;
-                    /*cout << "time(0): " << (double)(time(0)) << endl;
-                    cout << "t: " << (double)(t) << endl;
-                    cout << endl;*/
-                    //MPI_Recv(&message_recv, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status_master);
-                    //randomBit_recv = message_recv[1];
-                    *chooseRandom = rand(*chooseRandom);
-                    randomBit = *chooseRandom % 2;
-                    runOp(*chooseRandom % 16, randomBit);
-                    thread_count += 1;
-                    //ops[status_master.MPI_SOURCE] = ops[status_master.MPI_SOURCE] + 1;
-                    //MPI_Send(&world_rank, 1, MPI_INT, status_master.MPI_SOURCE, 1, MPI_COMM_WORLD);
-                    //n += 1;
-                    //cout << n << endl;
-                }
-                total_count[iam] = thread_count;
+        while(1){
+            if ((double)(time(0) - t) > NSECONDS-1) {
+                break;
             }
-        //}
-        BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
-        BinarySearchTree->root = NULL;
-
-        for (int thread = 0; thread < numThreads; thread++) {
-            n += total_count[thread];
-        }
-
-        cout << setw(10) << "rt";
-        cout << setw(20) << "ops";
-        cout << endl;
-
-        cout << setw(10) << "--";        // rt
-        cout << setw(20) << "---";       // ops
-        cout << endl;
-
-        //double rt = (double)(clock() - start) * 1000.0 / CLOCKS_PER_SEC;
-        double rt = (double)(time(0) - t);
-
-        cout << setw(10) << fixed << setprecision(2) << (double) rt;
-        cout << setw(20) << n;
-        cout << endl;
-
-        cout << endl;
-    /*}
-    else {
-        int message_send[2];
-
-        UINT64 n = 0;
-
-        UINT64 *chooseRandom  = new UINT64;
-        UINT randomValue;
-        UINT randomBit;
-
-        while (1) {
-            randomBit = 0;
             *chooseRandom = rand(*chooseRandom);
             randomBit = *chooseRandom % 2;
-            message_send[0] = *chooseRandom % 16;
-            message_send[1] = randomBit;
-            MPI_Send(&message_send, 2, MPI_INT, MASTER, 1, MPI_COMM_WORLD);
-            MPI_Recv(&message, 1, MPI_INT, MASTER, 1, MPI_COMM_WORLD, &status);
-            n += 1;
-            //
-            // check if runtime exceeded
-            //
-            if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000)
-                break;
+            runOp(*chooseRandom % 16, randomBit);
+            thread_count += 1;
         }
-    }*/
+        total_count[iam] = thread_count;
+    }
 
-    // Finalize the MPI environment.
-    //MPI_Finalize();
+    BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
+    BinarySearchTree->root = NULL;
+
+    for (int thread = 0; thread < numThreads; thread++) {
+        n += total_count[thread];
+    }
+
+    cout << setw(10) << "rt";
+    cout << setw(20) << "ops";
+    cout << endl;
+
+    cout << setw(10) << "--";        // rt
+    cout << setw(20) << "---";       // ops
+    cout << endl;
+
+    double rt = (double)(time(0) - t);
+
+    cout << setw(10) << fixed << setprecision(2) << (double) rt;
+    cout << setw(20) << n;
+    cout << endl;
+
+    cout << endl;
 
 }
 
