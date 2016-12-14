@@ -217,8 +217,6 @@ class Node {
         Node* volatile right;
         ALIGN(64) volatile long lock_node;
         Node() {key = 0; right = left = NULL, lock_node = 0;} // default constructor
-        void acquireTATAS_node();
-        void releaseTATAS_node();
 };
 
 class BST {
@@ -240,21 +238,16 @@ void BST::add (Node *n)
     acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
-    //Node lockedNode = *n;
     while (p) {
-        //lockedNode = **pp;
-        //lockedNode.acquireTATAS_node();
         if (n->key < p->key) {
             pp = &p->left;
         } else if (n->key > p->key) {
             pp = &p->right;
         } else {
             releaseTATAS();
-            //lockedNode.releaseTATAS_node();
             return;
         }
         p = *pp;
-        //lockedNode.releaseTATAS_node();
     }
     releaseTATAS();
     *pp = n;
@@ -325,19 +318,6 @@ void BST::acquireTATAS() {
 
 void BST::releaseTATAS() {
     lock = 0;
-}
-
-void Node::acquireTATAS_node() {
-    while (InterlockedExchange(&lock_node, 1) == 1){
-        cout << "acquiring" << endl;
-        do {
-            _mm_pause();
-        } while (lock_node == 1);
-    }
-}
-
-void Node::releaseTATAS_node() {
-    lock_node = 0;
 }
 
 volatile VINT *g;                               // NB: position of volatile

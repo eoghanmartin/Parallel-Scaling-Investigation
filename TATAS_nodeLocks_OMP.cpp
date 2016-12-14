@@ -217,8 +217,6 @@ class Node {
         Node* volatile right;
         ALIGN(64) volatile long lock_node;
         Node() {key = 0; right = left = NULL, lock_node = 0;} // default constructor
-        void acquireTATAS_node();
-        void releaseTATAS_node();
 };
 
 class BST {
@@ -239,29 +237,22 @@ BST *BinarySearchTree = new BST;
 
 void BST::add (Node *n)
 {
-    //acquireTATAS();
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = *n;
     while (p) {
-        //lockedNode = **pp;
-        //lockedNode.acquireTATAS_node();
         acquireTATAS_node(p);
         if (n->key < p->key) {
             pp = &p->left;
         } else if (n->key > p->key) {
             pp = &p->right;
         } else {
-            //releaseTATAS();
-            //lockedNode.releaseTATAS_node();
             releaseTATAS_node(p);
             return;
         }
         releaseTATAS_node(p);
         p = *pp;
-        //lockedNode.releaseTATAS_node();
     }
-    //releaseTATAS();
     *pp = n;
 }
 
@@ -333,22 +324,11 @@ void BST::releaseTATAS() {
     lock = 0;
 }
 
-void Node::acquireTATAS_node() {
-    while (InterlockedExchange(&lock_node, 1) == 1){
-        do {
-            cout << "acquiring" << endl;
-            _mm_pause();
-        } while (lock_node == 1);
-    }
-}
-
 void BST::acquireTATAS_node(Node* pp) {
-    //cout << root << endl;
     if(root != NULL) {
         volatile long int *p = &pp->lock_node;
         while (InterlockedExchange(&pp->lock_node, 1) == 1){
             do {
-                //cout << "acquiring" << endl;
                 _mm_pause();
             } while (*p == 1);
         }
@@ -358,10 +338,6 @@ void BST::acquireTATAS_node(Node* pp) {
 void BST::releaseTATAS_node(Node* pp) {
     volatile long int *p = &pp->lock_node;
     *p = 0;
-}
-
-void Node::releaseTATAS_node() {
-    lock_node = 0;
 }
 
 volatile VINT *g;                               // NB: position of volatile
