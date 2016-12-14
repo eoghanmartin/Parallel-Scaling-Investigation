@@ -231,7 +231,7 @@ class BST {
         void remove(INT64 key); // remove key from tree
         void releaseTATAS();  //HLE functionality added to BST class
         void acquireTATAS();
-        void acquireTATAS_node(Node *pp);
+        void acquireTATAS_node(Node* pp);
 };
 
 BST *BinarySearchTree = new BST;
