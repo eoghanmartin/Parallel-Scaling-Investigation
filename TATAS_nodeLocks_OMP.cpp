@@ -340,7 +340,7 @@ void Node::acquireTATAS_node() {
 }
 
 void BST::acquireTATAS_node(Node* pp) {
-    int *p = &pp->lock_node;
+    volatile long int *p = &pp->lock_node;
     while (InterlockedExchange(p, 1) == 1){
         do {
             cout << "acquiring" << endl;
