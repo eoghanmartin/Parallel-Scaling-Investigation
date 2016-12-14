@@ -242,6 +242,7 @@ void BST::add (Node *n)
     Node* volatile* volatile pp = &root;
     Node* volatile p = root;
     Node lockedNode = **pp;
+    cout << root << endl;
     acquireTATAS_node(root);
     while (p) {
         //lockedNode = **pp;
