@@ -406,7 +406,7 @@ int main()
         UINT randomBit;
 
         omp_set_dynamic(0);     // Explicitly disable dynamic teams
-        omp_set_num_threads(16);
+        omp_set_num_threads(2);
 
         #pragma omp parallel private(iam, np, thread_count, randomBit)
         {
