@@ -375,7 +375,7 @@ int main()
     UINT randomBit;
 
     omp_set_dynamic(0);     // Explicitly disable dynamic teams
-    omp_set_num_threads(8);
+    omp_set_num_threads(4);
     #pragma omp parallel private(iam, np, thread_count, randomBit)
     {
         np = numThreads = omp_get_num_threads();
@@ -398,6 +398,8 @@ int main()
 
     BinarySearchTree->destroy(BinarySearchTree->root); //Recursively destroy BST
     BinarySearchTree->root = NULL;
+
+    cout << "Threads: " << numThreads << endl;
 
     for (int thread = 0; thread < numThreads; thread++) {
         n += total_count[thread];
