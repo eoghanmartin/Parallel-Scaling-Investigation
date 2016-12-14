@@ -413,7 +413,7 @@ int main()
             }
             *chooseRandom = rand(*chooseRandom);
             randomBit = *chooseRandom % 2;
-            runOp(*chooseRandom % 16, randomBit);
+            runOp(*chooseRandom % 1048576, randomBit);
             thread_count += 1;
         }
         total_count[iam] = thread_count;
