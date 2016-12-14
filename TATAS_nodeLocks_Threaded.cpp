@@ -422,7 +422,8 @@ int main()
             //if (((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC > NSECONDS*1000) {
             //            break;
             //        }
-
+omp_set_dynamic(0);     // Explicitly disable dynamic teams
+omp_set_num_threads(4);
             #pragma omp parallel private(iam, np, thread_count, randomBit)
             {
                 np = numThreads = omp_get_num_threads();
@@ -440,7 +441,7 @@ int main()
                     //    break;
                     //}
                     //cout << ((double)(clock() - start) * 1000.0) / CLOCKS_PER_SEC << endl;
-                    cout << "time(0) - t: " << (double)(time(0) - t) << endl;
+                    //cout << "time(0) - t: " << (double)(time(0) - t) << endl;
                     /*cout << "time(0): " << (double)(time(0)) << endl;
                     cout << "t: " << (double)(t) << endl;
                     cout << endl;*/
