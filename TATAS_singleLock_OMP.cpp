@@ -363,6 +363,8 @@ int main()
     setCommaLocale();
     t = time(0);
 
+    UINT64 n = 0;
+
     int iam = 0, np = 1, thread_count =0;
     INT64 total_count[64] = {};
     int numThreads = 0;
