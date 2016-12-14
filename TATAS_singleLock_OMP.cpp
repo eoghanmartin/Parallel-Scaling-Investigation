@@ -317,9 +317,9 @@ void BST::destroy(volatile Node *nextNode)
 
 void BST::acquireTATAS() {
     while (InterlockedExchange(&lock, 1) == 1){
-        cout << "acquiring" << endl;
+        //cout << "acquiring" << endl;
         do {
-            //cout << "acquiring" << endl;
+            cout << "acquiring" << endl;
             _mm_pause();
         } while (lock == 1);
     }
